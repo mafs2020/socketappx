@@ -1,8 +1,8 @@
-const { DataTypes, UUID } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/connection");
 
-const Address = sequelize.define(
-  "address",
+const User = sequelize.define(
+  "user",
   {
     id: {
       type: DataTypes.UUID,
@@ -10,51 +10,64 @@ const Address = sequelize.define(
       allowNull: false,
       defaultValue: DataTypes.UUIDV4,
     },
-    nameId: {
+    firstName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    lineOne: {
+    lastName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    lineSecond: {
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    zipCode: {
+    phone: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+    },
+    password: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    city: {
+    timeZone: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    state: {
+    status: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    language: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    country: {
+    referenceCurrency: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    urlImg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    dateOfBirth: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    lat: {
+    position: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    lng: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    //userId
-    //addressType
+    //addressId
+    //summaryId
+    //rolId
   },
   {
-    tableName: "address",
+    tableName: "user",
     freezeTableName: true,
     timestamps: true,
     createdAt: "created_at",
     updatedAt: false,
   }
 );
-module.exports = Address;
+module.exports = User;

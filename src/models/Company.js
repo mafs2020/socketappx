@@ -1,8 +1,8 @@
-const { DataTypes, UUID } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/connection");
 
-const Address = sequelize.define(
-  "address",
+const Company = sequelize.define(
+  "company",
   {
     id: {
       type: DataTypes.UUID,
@@ -10,51 +10,63 @@ const Address = sequelize.define(
       allowNull: false,
       defaultValue: DataTypes.UUIDV4,
     },
-    nameId: {
+    legalName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    lineOne: {
+    about: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    type: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      comment: "Persona física o moral",
+    },
+    legalId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      comment: "RFC/VAT/Numero de identificacion",
+    },
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    lineSecond: {
+    phone: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+    },
+    password: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    zipCode: {
+    webSite: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    urlImg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    segment: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    city: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    state: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    country: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    lat: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    lng: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    //addressId
     //userId
-    //addressType
+    //marketId
+    //summaryId
   },
   {
-    tableName: "address",
+    tableName: "company",
     freezeTableName: true,
     timestamps: true,
     createdAt: "created_at",
     updatedAt: false,
   }
 );
-module.exports = Address;
+module.exports = Company;
