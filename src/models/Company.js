@@ -32,6 +32,10 @@ const Company = sequelize.define(
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
