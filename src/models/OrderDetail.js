@@ -25,6 +25,7 @@ const OrderDetail = sequelize.define(
     value: {
       type: DataTypes.FLOAT,
       allowNull: false,
+      comment: "Valor unitario"
     },
     unitOfMeasurement: {
       type: DataTypes.STRING,

@@ -50,11 +50,6 @@ const SummaryTransaction = sequelize.define(
       allowNull: false,
       comment: "¿Cómo fué la comunicación?",
     },
-    levelCommunication: {
-      type: DataTypes.NUMBER,
-      allowNull: false,
-      comment: "¿Cómo fué la comunicación?",
-    },
     addresseeCompany: {
       type: DataTypes.STRING,
       allowNull: false,

@@ -26,7 +26,7 @@ const MetaField = sequelize.define(
     },
     unitOfMeasurement: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: true,
     },
     description: {
       type: DataTypes.TEXT,

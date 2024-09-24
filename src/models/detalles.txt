@@ -75,3 +75,5 @@ Volumen y Logística:
     Sistema de gestión de inventarios: Herramientas y métodos para llevar un control efectivo del stock.
     Etiquetado y embalaje: Información sobre cómo deben ser etiquetados y empaquetados los productos para el transporte.
     Transporte multimodal: Uso de diferentes medios de transporte para la logística (camión, tren, barco, avión).
+
+Incoterms: ...

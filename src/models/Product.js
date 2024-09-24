@@ -27,7 +27,7 @@ const Product = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    //variableValues ---> unitOfMeasurement
+    //MetaField ---> unitOfMeasurement
     //PricesId
     //Stock
     //VariantId
