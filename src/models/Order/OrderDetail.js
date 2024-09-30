@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../utils/connection");
+const sequelize = require("../../utils/connection");
+const Order = require('./Order')
 
 const OrderDetail = sequelize.define(
   "orderDetail",
@@ -25,6 +26,7 @@ const OrderDetail = sequelize.define(
     value: {
       type: DataTypes.FLOAT,
       allowNull: false,
+      comment: "Valor unitario"
     },
     unitOfMeasurement: {
       type: DataTypes.STRING,
@@ -43,4 +45,9 @@ const OrderDetail = sequelize.define(
     updatedAt: false,
   }
 );
+
+//Order
+Order.hasMany(OrderDetail, { foreignKey: 'orderId' });
+Order.belongsTo(OrderDetail, { foreignKey: 'orderId' });
+
 module.exports = OrderDetail;

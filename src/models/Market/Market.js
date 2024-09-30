@@ -1,8 +1,8 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../utils/connection");
+const { DataTypes, UUID } = require("sequelize");
+const sequelize = require("../../utils/connection");
 
-const Stock = sequelize.define(
-  "stock",
+const Market = sequelize.define(
+  "market",
   {
     id: {
       type: DataTypes.UUID,
@@ -10,27 +10,23 @@ const Stock = sequelize.define(
       allowNull: false,
       defaultValue: DataTypes.UUIDV4,
     },
-    companyId: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    sku: {
+    logoUrl: {
       type: DataTypes.STRING,
-      comment: "16 caracteres",
-      allowNull: false,
-    },
-    stock: {
-      type: DataTypes.BIGINT,
       allowNull: true,
-      comment: "Disponibilidad",
     },
+    //CategoriesId --> ProductsId ---> (PricesId && Stock) && VariantsId ---> (PricesId && Stock)
+    //ClientsId
   },
   {
-    tableName: "stock",
+    tableName: "market",
     freezeTableName: true,
     timestamps: true,
     createdAt: "created_at",
     updatedAt: false,
   }
 );
-module.exports = Stock;
+module.exports = Market;

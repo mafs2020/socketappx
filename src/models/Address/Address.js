@@ -1,5 +1,5 @@
 const { DataTypes, UUID } = require("sequelize");
-const sequelize = require("../utils/connection");
+const sequelize = require("../../utils/connection");
 
 const Address = sequelize.define(
   "address",

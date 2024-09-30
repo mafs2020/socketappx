@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../utils/connection");
+const { DataTypes, UUID } = require("sequelize");
+const sequelize = require("../../utils/connection");
 
 const Rol = sequelize.define(
   "rol",

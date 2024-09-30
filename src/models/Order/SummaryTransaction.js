@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../utils/connection");
+const { DataTypes, UUID } = require("sequelize");
+const sequelize = require("../../utils/connection");
 
 const SummaryTransaction = sequelize.define(
   "summaryTransaction",
@@ -23,35 +23,30 @@ const SummaryTransaction = sequelize.define(
       allowNull: false,
     },
     score: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     description: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     accurateDescription: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
       comment: "¿Fue precisa la descripción del producto?",
     },
     fastShipping: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
       comment: "¿Fue rápido el envío?",
     },
     economyShipping: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
       comment: "¿Fue económico el envío?",
     },
     levelCommunication: {
-      type: DataTypes.NUMBER,
-      allowNull: false,
-      comment: "¿Cómo fué la comunicación?",
-    },
-    levelCommunication: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
       comment: "¿Cómo fué la comunicación?",
     },

@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../utils/connection");
+const sequelize = require("../../utils/connection");
+const Address = require("./Address");
 
 const AddressType = sequelize.define(
   "addressType",
@@ -23,4 +24,8 @@ const AddressType = sequelize.define(
     updatedAt: false,
   }
 );
+
+Address.hasOne(AddressType, { foreignKey: 'idAddress' });
+Address.belongsTo(AddressType, { foreignKey: 'idAddress' });
+
 module.exports = AddressType;

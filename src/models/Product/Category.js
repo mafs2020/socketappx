@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../utils/connection");
+const sequelize = require("../../utils/connection");
+const Product = require('./Product')
 
 const Category = sequelize.define(
   "category",
@@ -33,4 +34,8 @@ const Category = sequelize.define(
     updatedAt: false,
   }
 );
+
+Product.hasMany(Category, { foreignKey: 'productId' });
+Category.belongsTo(Product, { foreignKey: 'productId' });
+
 module.exports = Category;

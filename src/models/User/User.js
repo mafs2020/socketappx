@@ -1,5 +1,8 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../utils/connection");
+const { DataTypes, UUID } = require("sequelize");
+const sequelize = require("../../utils/connection");
+const Address = require('../Address/Address')
+const Summary = require('../Order/SummaryTransaction')
+const Rol = require('./Rol')
 
 const User = sequelize.define(
   "user",
@@ -70,4 +73,17 @@ const User = sequelize.define(
     updatedAt: false,
   }
 );
+
+//Address
+User.hasMany(Address, { foreignKey: 'userId' });
+User.belongsTo(Address, { foreignKey: 'userId' });
+
+//Sumary
+User.hasMany(Summary, { foreignKey: 'userId' });
+User.belongsTo(Summary, { foreignKey: 'userId' });
+
+//Rol
+User.hasMany(Rol, { foreignKey: 'userId' });
+User.belongsTo(Rol, { foreignKey: 'userId' });
+
 module.exports = User;

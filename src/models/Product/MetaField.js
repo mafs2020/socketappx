@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../utils/connection");
+const sequelize = require("../../utils/connection");
 
 const MetaField = sequelize.define(
   "metaField",
@@ -26,7 +26,7 @@ const MetaField = sequelize.define(
     },
     unitOfMeasurement: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: true,
     },
     description: {
       type: DataTypes.TEXT,

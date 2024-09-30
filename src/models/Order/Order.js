@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../utils/connection");
+const { DataTypes, UUID } = require("sequelize");
+const sequelize = require("../../utils/connection");
 
 const Order = sequelize.define(
   "order",
@@ -50,7 +50,7 @@ const Order = sequelize.define(
     paymentMethod: {
       type: DataTypes.STRING,
       allowNull: true,
-      comment: "Estado pago",
+      comment: "Metodo de pago",
     },
     //orderDetail
   },
