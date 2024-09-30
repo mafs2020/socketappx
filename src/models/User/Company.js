@@ -1,5 +1,9 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../utils/connection");
+const { DataTypes, UUID } = require("sequelize");
+const sequelize = require("../../utils/connection");
+const Address = require('../Address/Address')
+const User = require('./User')
+const Market = require('../../models/Market/Market')
+const Sumary = require('../../models/Order/SummaryTransaction')
 
 const Company = sequelize.define(
   "company",
@@ -73,4 +77,21 @@ const Company = sequelize.define(
     updatedAt: false,
   }
 );
+
+//Address
+Company.hasMany(Address, { foreignKey: 'addressId' });
+Company.belongsTo(Address, { foreignKey: 'addressId' });
+
+//User
+Company.hasMany(User, { foreignKey: 'userId' });
+Company.belongsTo(User, { foreignKey: 'userId' });
+
+//Market
+Company.hasMany(Market, { foreignKey: 'marketId' });
+Company.belongsTo(Market, { foreignKey: 'marketId' });
+
+//Sumary
+Company.hasMany(Sumary, { foreignKey: 'sumaryId' });
+Company.belongsTo(Sumary, { foreignKey: 'sumaryId' });
+
 module.exports = Company;
