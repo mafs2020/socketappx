@@ -10,7 +10,7 @@ const Address = sequelize.define(
       allowNull: false,
       defaultValue: DataTypes.UUIDV4,
     },
-    nameId: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -43,6 +43,14 @@ const Address = sequelize.define(
       allowNull: false,
     },
     lng: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    phone: {
       type: DataTypes.STRING,
       allowNull: false,
     },

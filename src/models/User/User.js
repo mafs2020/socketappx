@@ -25,6 +25,10 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    userName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     phone: {
       type: DataTypes.BIGINT,
       allowNull: false,

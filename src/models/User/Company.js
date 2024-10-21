@@ -3,7 +3,9 @@ const sequelize = require("../../utils/connection");
 const Address = require('../Address/Address')
 const User = require('./User')
 const Market = require('../../models/Market/Market')
-const Sumary = require('../../models/Order/SummaryTransaction')
+const Sumary = require('../../models/Order/SummaryTransaction');
+const Sector = require("./Sectror");
+const Document = require("./Document");
 
 const Company = sequelize.define(
   "company",
@@ -13,6 +15,10 @@ const Company = sequelize.define(
       primaryKey: true,
       allowNull: false,
       defaultValue: DataTypes.UUIDV4,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     legalName: {
       type: DataTypes.STRING,
@@ -34,7 +40,7 @@ const Company = sequelize.define(
     },
     isVerified: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
     },
     isAdmin: {
       type: DataTypes.BOOLEAN,
@@ -50,7 +56,7 @@ const Company = sequelize.define(
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     webSite: {
       type: DataTypes.STRING,
@@ -62,7 +68,7 @@ const Company = sequelize.define(
     },
     segment: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     //addressId
     //userId
@@ -79,8 +85,8 @@ const Company = sequelize.define(
 );
 
 //Address
-Company.hasMany(Address, { foreignKey: 'addressId' });
-Company.belongsTo(Address, { foreignKey: 'addressId' });
+Company.hasOne(Address, { foreignKey: 'addressId' });
+Address.belongsTo(Company, { foreignKey: 'addressId' });
 
 //User
 Company.hasMany(User, { foreignKey: 'userId' });
@@ -93,5 +99,13 @@ Company.belongsTo(Market, { foreignKey: 'marketId' });
 //Sumary
 Company.hasMany(Sumary, { foreignKey: 'sumaryId' });
 Company.belongsTo(Sumary, { foreignKey: 'sumaryId' });
+
+//Documents
+Company.hasOne(Document, { foreignKey: 'documentId' });
+Document.belongsTo(Company, { foreignKey: 'documentId' });
+
+//Sector
+Company.hasOne(Sector, { foreignKey: 'sectorId' });
+Sector.belongsTo(Company, { foreignKey: 'sectorId' });
 
 module.exports = Company;

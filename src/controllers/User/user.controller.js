@@ -31,44 +31,62 @@ const getAll = catchError(async(req, res) => {
 });
 
 const create = catchError(async(req, res) => {
-    const { name, email, password } = req.body;
-    const lowerCaseName = name.toLowerCase();
+    const { 
+        language,
+        referenceCurrency,
+        urlImg,
+        dateOfBirth ,
+        position, 
+        email, 
+        password,
+        firstName,
+        lastName,
+        phone,
+        timeZone } = req.body;
     const lowerCaseEmail = email.toLowerCase();
     const encriptedPassword = await bcrypt.hash(password, 10);
     const result = await User.create({
-        name: lowerCaseName,
         email: lowerCaseEmail,
         password: encriptedPassword,
-    });
-    await sendEmail({
-        to: lowerCaseEmail,
-        subject: "Cuenta de para el sistema de subastas creada con éxito 🥳",
-        html: `
-        <div
-        style="
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 40px;
-            background-color: rgb(245 245, 245);
-            border-radius: 40px;
-            min-height: calc(100vh - 100px);
-        "
-        ;
-        >
-        <header>
-            <img
-            src="http://cdn.mcauto-images-production.sendgrid.net/ca3921367677ec93/67e398cb-00f7-49c6-b97f-713e4f6cfe0b/160x64.png"
-            />
-        </header>
-        <body>
-            <h1>Cuenta creada exitosamente</h1>
-            <p>
-    Hola <b>${lowerCaseName}</b>, tu cuenta fue creada de manera exitosa, espera a que quede habilitada para poder tiener acceso completo a los endpoints de B2B.
-            </p>
-        </body>
-        </div>
-        `,
-    });
+        firstName,
+        lastName,
+        phone,
+        timeZone,
+        status: "Active",
+        language,
+        referenceCurrency,
+        urlImg,
+        dateOfBirth,
+        position });
+    // await sendEmail({
+    //     to: lowerCaseEmail,
+    //     subject: "Cuenta de para el sistema de subastas creada con éxito 🥳",
+    //     html: `
+    //     <div
+    //     style="
+    //         max-width: 600px;
+    //         margin: 0 auto;
+    //         padding: 40px;
+    //         background-color: rgb(245 245, 245);
+    //         border-radius: 40px;
+    //         min-height: calc(100vh - 100px);
+    //     "
+    //     ;
+    //     >
+    //     <header>
+    //         <img
+    //         src="http://cdn.mcauto-images-production.sendgrid.net/ca3921367677ec93/67e398cb-00f7-49c6-b97f-713e4f6cfe0b/160x64.png"
+    //         />
+    //     </header>
+    //     <body>
+    //         <h1>Cuenta creada exitosamente</h1>
+    //         <p>
+    // Hola <b>${lowerCaseName}</b>, tu cuenta fue creada de manera exitosa, espera a que quede habilitada para poder tiener acceso completo a los endpoints de B2B.
+    //         </p>
+    //     </body>
+    //     </div>
+    //     `,
+    // });
     return res.status(201).json(result);
 });
 
@@ -100,44 +118,49 @@ const update = catchError(async(req, res) => {
             returning: true,
         }
     );
-    await sendEmail({
-        to: lowerCaseEmail,
-        subject: "Cuenta activada 🥳",
-        html: `
-        <div
-        style="
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 40px;
-            background-color: rgb(245 245, 245);
-            border-radius: 40px;
-            min-height: calc(100vh - 100px);
-        "
-        ;
-        >
-        <header>
-            <img
-            src="http://cdn.mcauto-images-production.sendgrid.net/ca3921367677ec93/67e398cb-00f7-49c6-b97f-713e4f6cfe0b/160x64.png"
-            />
-        </header>
-        <body>
-            <h1>Cuenta activada exitosamente.</h1>
-            <p>
-            Hola <b>${preData.dataValues.name}</b>, la espera valió la pena, tu cuenta con privilegios de administrador fue habilitada exitosamente, ahora tienes acceso completo a los endpoints de B2B.
-            </p>
-            </body>
-        </div>
-        `,
-    });
+    // await sendEmail({
+    //     to: lowerCaseEmail,
+    //     subject: "Cuenta activada 🥳",
+    //     html: `
+    //     <div
+    //     style="
+    //         max-width: 600px;
+    //         margin: 0 auto;
+    //         padding: 40px;
+    //         background-color: rgb(245 245, 245);
+    //         border-radius: 40px;
+    //         min-height: calc(100vh - 100px);
+    //     "
+    //     ;
+    //     >
+    //     <header>
+    //         <img
+    //         src="http://cdn.mcauto-images-production.sendgrid.net/ca3921367677ec93/67e398cb-00f7-49c6-b97f-713e4f6cfe0b/160x64.png"
+    //         />
+    //     </header>
+    //     <body>
+    //         <h1>Cuenta activada exitosamente.</h1>
+    //         <p>
+    //         Hola <b>${preData.dataValues.name}</b>, la espera valió la pena, tu cuenta con privilegios de administrador fue habilitada exitosamente, ahora tienes acceso completo a los endpoints de B2B.
+    //         </p>
+    //         </body>
+    //     </div>
+    //     `,
+    // });
     if (result[0] === 0) return res.sendStatus(404);
     return res.json(result[1][0]);
 });
 
 const login = catchError(async(req, res) => {
-    const { email, password } = req.body;
+    const { email, password, userName } = req.body;
     const lowerCaseEmail = email.toLowerCase();
-    const user = await User.findOne({ where: { email:lowerCaseEmail } });
-    // console.log("lo que devuelve",user)
+    let user = ''
+    if(userName == ''){
+         user = await User.findOne({ where: { email:lowerCaseEmail } });
+    } else {
+        user = await User.findOne({ where: { username } });
+    }
+    // const user = await User.findOne({ where: { email:lowerCaseEmail } });
     if (!user) return res.status(401).json({ message: "Credenciales invalidas" });
     else {
         const isValid = await bcrypt.compare(password, user.password);
@@ -152,11 +175,31 @@ const login = catchError(async(req, res) => {
     }
 })
 
+const changeNewPassword = catchError(async (req, res) => {
+    const { id } = req.params;
+    const { password, newpassword } = req.body;
+    //const encriptedPassword = await bcrypt.hash(password, 10);
+    const idUs = await User.findOne({ where: { id } });
+    const resp = await bcrypt.compare(password, idUs.dataValues.password)
+    // const resetCode = await User.findOne({ where: { password: encriptedPassword } });
+    if (!resp) return res.status(401).json({ message: "Contraseña invalida" });
+    const encriptedPasswordNew = await bcrypt.hash(newpassword, 10);
+    const user = await User.update(
+      { password: encriptedPasswordNew },
+      {
+        where: { id },
+        returning: true,
+      }
+    );
+    return res.json(user[1][0]);
+  });
+
 module.exports = {
     getAll,
     create,
     getOne,
     remove,
     update,
-    login
+    login,
+    changeNewPassword,
 }

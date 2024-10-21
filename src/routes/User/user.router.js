@@ -1,4 +1,4 @@
-const { getAll, create, getOne, remove, update 
+const { getAll, create, getOne, remove, update, login, changeNewPassword,
 } = require('../../controllers/User/user.controller');
 const express = require('express');
 
@@ -12,5 +12,8 @@ UserRouter.route('/user/:id')
     .get(getOne)
     .delete(remove)
     .put(update);
+
+UserRouter.route('/user/login').post(login)
+UserRouter.route("/user/changePassword/:id").post(changeNewPassword);
 
 module.exports = UserRouter;
