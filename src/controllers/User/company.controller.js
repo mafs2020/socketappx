@@ -37,67 +37,78 @@ const create2 = catchError(async (req, res) => {
     const urls = [];
     try{
     for (const file of files) {
-        const { url } = await uploadToCloudinary(file);
-        urls.push(url);
+        const res = await uploadToCloudinary(file);
+        console.log('res', res)
+        urls.push(res.url);
     }
     console.log('urls', urls)
-    return res.status(400).json(urls)
+    return res.status(200).json(urls)
    }catch (error){
     return res.status(500).json({ message: 'Error al subir archivos', error });
    }
 });
 
 const create = catchError(async (req, res) => {
-    //Guardar las imagenes
-    // const files = req.files;
-    // console.log('files', files)
-    // const urls = [];
-    // for (const file of files) {
-    //     const { url } = await uploadToCloudinary(file);
-    //     urls.push(url);
-    // }
-    // console.log('urls', urls)
-
     //Datos a guardar
     const { users, companys, address, sector } = req.body;
-    console.log('datos', users, companys, address, sector);
+    // console.log('datos', users, companys, address, sector);
     const transaction = await sequelize.transaction();
-    try {
+    try{
+        //Guardar las imagenes
+        const files = req.files;
+        console.log('files', files)
+        const urls = [];
+        for (const file of files) {
+            const { secure_url } = await uploadToCloudinary(file);//secure_url
+            urls.push(secure_url);
+        }
+        console.log('urls', urls)
+
+        
+    
         // Crear Address
-        const addr = await Address.create(address, { transaction });
-        console.log('Domicilio lo hizo');
+        const addr = await Address.create(JSON.parse(address), { transaction });
+        console.log('address')
 
         // Crear Company y asociarla con Address
         const comp = await Company.create({
-            ...companys,
-            addressId: addr.id
+            ...JSON.parse(companys),
+            addressId: addr.id,
+            urlImg: urls[1]
         }, { transaction });
-        console.log('Compañía lo hizo');
+        console.log('company')
 
         // Crear Document asociado con Company
         const doc = await Document.create({
-            ...document,
+            // ...document,
+            taxStatus: urls[2],
+            address: urls[3],
+            bankDetails: urls[4],
+            policies: urls[5],
+            constitutiveAct: urls[6],
+            legalPower: urls[7],
             companyId: comp.id
         }, { transaction });
-        console.log('Documentos lo hizo');
+        console.log('documents')
 
         // Crear Sector asociado con Company
         const sec = await Sector.create({
-            ...sector,
+            ...JSON.parse(sector),
             companyId: comp.id
         }, { transaction });
-        console.log('Sector lo hizo');
+        console.log('sector')
 
         // Crear User asociado con Company
         const uss = await User.create({
-            ...users,
-            companyId: comp.id
+            ...JSON.parse(users),
+            companyId: comp.id,
+            urlImg: urls[0]
         }, { transaction });
-        console.log('User lo hizo');
+        console.log('user')
 
         // Confirmar la transacción si todo es exitoso
         await transaction.commit();
-        return res.status(201).json({
+        return res.status(200).json({
             address: addr,
             company: comp,
             document: doc,

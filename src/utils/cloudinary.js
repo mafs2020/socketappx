@@ -14,7 +14,8 @@ const uploadToCloudinary = async (file) => {
   try {
     const filePathOnCloudinary = folder + "/" + path.parse(filename).name;
     const result = await cloudinary.uploader.upload(filePath, {
-      public_id: filePathOnCloudinary
+      public_id: filePathOnCloudinary,
+      resource_type: 'raw',
     });
     return result;
   } catch (error) {
