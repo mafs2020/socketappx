@@ -38,13 +38,13 @@ module.exports = (io) => {
 
     socket.on("joinRoom", (id) => {
       console.log("id :>> ", id);
-      socket.join(`${id}`);
+      socket.join(`puja-${id}`);
       console.log(socket.rooms);
     });
 
     socket.on("abandonar", (id) => {
       console.log("id :>> ", id);
-      socket.leave(`${id}`);
+      socket.leave(`puja-${id}`);
 
       console.log(socket.rooms);
     });
@@ -129,7 +129,7 @@ module.exports = (io) => {
       // todo este hace que se emita un evento excepto a quien lo hizo
       // socket.to(`${room}`).emit("puja", { monto: monto });
       // todo este evento hace que a todos incluido el sender reciba actualizacion
-      io.to(`${room}`).emit(`puja-${room}`, { monto: monto });
+      io.to(`puja-${room}`).emit(`puja-${room}`, { monto: monto });
     });
     // the “foo” event will be broadcast to all connected clients in the “room-101” room
     // io.to("room1-101").emit("foo", "bar");
