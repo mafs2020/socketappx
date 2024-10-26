@@ -1,4 +1,4 @@
-const { getAll, create, getOne, remove, update, login, changeNewPassword,
+const { getAll, create, getOne, remove, update, login, changeNewPassword, createUserAddress, getAllUsersCompany,
 } = require('../../controllers/User/user.controller');
 const express = require('express');
 
@@ -15,5 +15,7 @@ UserRouter.route('/user/:id')
 
 UserRouter.route('/user/login').post(login)
 UserRouter.route("/user/changePassword/:id").post(changeNewPassword);
+UserRouter.route("/user/create").post(createUserAddress);
+UserRouter.route("/user/getUsers").post(getAllUsersCompany);
 
 module.exports = UserRouter;

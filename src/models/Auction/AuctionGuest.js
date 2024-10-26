@@ -31,15 +31,21 @@ const AuctionGuest = sequelize.define("auctionGuest",{
 );
 
 //
-Auction.hasMany(AuctionGuest, { foreignKey: 'idAuction' });
-Auction.belongsTo(AuctionGuest, { foreignKey: 'idAuction' });
+Auction.hasMany(AuctionGuest)
+Auction.belongsTo(AuctionGuest, { foreignKey: 'auctionId' });
+// Auction.hasMany(AuctionGuest, { foreignKey: 'auctionId' });
+// Auction.belongsTo(AuctionGuest, { foreignKey: 'auctionId' });
 
 //Usuario
-User.hasMany(AuctionGuest, { foreignKey: 'idUser' } )
-User.belongsTo(AuctionGuest, { foreignKey: 'idUser' });
+User.hasMany(AuctionGuest)
+User.belongsTo(AuctionGuest, { foreignKey: 'userId' });
+// User.hasMany(AuctionGuest, { foreignKey: 'userId' } )
+// User.belongsTo(AuctionGuest, { foreignKey: 'userId' });
 
 //
-AuctionGuest.hasMany(GuestBid, { foreignKey: 'idGuest' });
-AuctionGuest.belongsTo(GuestBid, { foreignKey: 'idGuest' });
+AuctionGuest.hasMany(GuestBid)
+AuctionGuest.belongsTo(GuestBid, { foreignKey: 'guestId' });
+// AuctionGuest.hasMany(GuestBid, { foreignKey: 'guestId' });
+// AuctionGuest.belongsTo(GuestBid, { foreignKey: 'guestId' });
 
 module.exports = AuctionGuest;

@@ -46,19 +46,27 @@ const Product = sequelize.define(
 );
 
 //Metafield
-Product.hasMany(Metafield, { foreignKey: 'ProductId' });
+Product.hasMany(Metafield)
 Product.belongsTo(Metafield, { foreignKey: 'ProductId' });
+// Product.hasMany(Metafield, { foreignKey: 'ProductId' });
+// Product.belongsTo(Metafield, { foreignKey: 'ProductId' });
 
 //Price
-Product.hasMany(Price, { foreignKey: 'ProductId' });
+Product.hasMany(Price)
 Product.belongsTo(Price, { foreignKey: 'ProductId' });
+// Product.hasMany(Price, { foreignKey: 'ProductId' });
+// Product.belongsTo(Price, { foreignKey: 'ProductId' });
 
 //Stock
-Product.hasMany(Stock, { foreignKey: 'ProductId' });
+Product.hasMany(Stock)
 Product.belongsTo(Stock, { foreignKey: 'ProductId' });
+// Product.hasMany(Stock, { foreignKey: 'ProductId' });
+// Product.belongsTo(Stock, { foreignKey: 'ProductId' });
 
 //Variant
-Product.hasMany(Variant, { foreignKey: 'ProductId' });
+Product.hasMany(Variant)
 Product.belongsTo(Variant, { foreignKey: 'ProductId' });
+// Product.hasMany(Variant, { foreignKey: 'ProductId' });
+// Product.belongsTo(Variant, { foreignKey: 'ProductId' });
 
 module.exports = Product;

@@ -5,6 +5,7 @@ const User = require('../../models/User/User');
 const Address = require('../../models/Address/Address');
 const Rol = require('../../models/User/Rol');
 const AddressType = require('../../models/Address/AddressType');
+const sequelize = require("../../utils/connection");
 
 const getAll = catchError(async(req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -42,7 +43,8 @@ const create = catchError(async(req, res) => {
         firstName,
         lastName,
         phone,
-        timeZone } = req.body;
+        timeZone, 
+        userName } = req.body;
     const lowerCaseEmail = email.toLowerCase();
     const encriptedPassword = await bcrypt.hash(password, 10);
     const result = await User.create({
@@ -53,11 +55,13 @@ const create = catchError(async(req, res) => {
         phone,
         timeZone,
         status: "Active",
+        isAdmin: true,
         language,
         referenceCurrency,
         urlImg,
         dateOfBirth,
-        position });
+        position,
+        userName });
     // await sendEmail({
     //     to: lowerCaseEmail,
     //     subject: "Cuenta de para el sistema de subastas creada con éxito 🥳",
@@ -92,7 +96,10 @@ const create = catchError(async(req, res) => {
 
 const getOne = catchError(async(req, res) => {
     const { id } = req.params;
-    const result = await User.findByPk(id);
+    const result = await User.findAll({
+        where: {id},
+        include :[{ model: Address}]
+    });
     if(!result) return res.sendStatus(404);
     return res.json(result);
 });
@@ -158,7 +165,7 @@ const login = catchError(async(req, res) => {
     if(userName == ''){
          user = await User.findOne({ where: { email:lowerCaseEmail } });
     } else {
-        user = await User.findOne({ where: { username } });
+        user = await User.findOne({ where: { userName } });
     }
     // const user = await User.findOne({ where: { email:lowerCaseEmail } });
     if (!user) return res.status(401).json({ message: "Credenciales invalidas" });
@@ -170,7 +177,19 @@ const login = catchError(async(req, res) => {
         const token = jwt.sign({ user }, process.env.TOKEN_SECRET, {
             expiresIn: "1d",
         });
-        return res.json({ user, token });
+        const us = {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            userName: user.userName,
+            position: user.position,
+            urlImg: user.urlImg,
+            companyId: user.companyId,
+            isAdmin: user.isAdmin
+        }
+        return res.json({ user: us, token });
         }
     }
 })
@@ -194,6 +213,59 @@ const changeNewPassword = catchError(async (req, res) => {
     return res.json(user[1][0]);
   });
 
+  const createUserAddress = catchError(async(req, res) => {
+    const { user, address, companyId } = req.body;
+    // console.log('user', user)
+    // console.log('address', address)
+    // console.log('companyId', companyId)
+    const transaction = await sequelize.transaction();
+
+    const encriptedPassword = await bcrypt.hash(user.password, 10);
+    const resultUser = await User.create({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        userName: user.userName,
+        phone: user.phone,
+        timeZone: user.timeZone,
+        language: user.language,
+        referenceCurrency: user.referenceCurrency,
+        dateOfBirth: user.dateOfBirth,
+        position: user.position,
+        password: encriptedPassword,
+        isAdmin: user.isAdmin,
+        companyId}, 
+        { transaction });
+    if(!resultUser) {
+        await transaction.rollback();
+        return res.status(401).json({ message: "Error al crear el usuario", error: resultUser });
+    }
+
+    const resultAddress = await Address.create({...address, userId: resultUser.id}, { transaction });
+    if(!resultAddress) {
+        await transaction.rollback();
+        return res.status(401).json({ message: "Error al crear el domicilio", error: resultAddress });
+    }
+
+    await transaction.commit();
+    return res.status(200).json({
+        user: resultUser,
+        address: resultAddress
+    });
+});
+
+const getAllUsersCompany = catchError(async(req, res) => {
+    const { companyId } = req.body;
+    console.log('companyId', companyId)
+    const result = await User.findAll({
+        where: {
+            companyId: companyId
+        }
+    });
+    if(!result) return res.sendStatus(401).json({ message: "Error al consultar los usuarios", error: result });
+    return res.json(result);
+});
+
 module.exports = {
     getAll,
     create,
@@ -202,4 +274,6 @@ module.exports = {
     update,
     login,
     changeNewPassword,
+    createUserAddress,
+    getAllUsersCompany,
 }

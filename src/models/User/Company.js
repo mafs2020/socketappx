@@ -85,27 +85,39 @@ const Company = sequelize.define(
 );
 
 //Address
-Company.hasOne(Address, { foreignKey: 'addressId' });
+Company.hasOne(Address);
 Address.belongsTo(Company, { foreignKey: 'addressId' });
+// Company.hasOne(Address, { foreignKey: 'addressId' });
+// Address.belongsTo(Company, { foreignKey: 'addressId' });
 
 //User
-Company.hasMany(User, { foreignKey: 'userId' });
+Company.hasMany(User);
 Company.belongsTo(User, { foreignKey: 'userId' });
+// Company.hasMany(User, { foreignKey: 'userId' });
+// Company.belongsTo(User, { foreignKey: 'userId' });
 
 //Market
-Company.hasMany(Market, { foreignKey: 'marketId' });
+Company.hasMany(Market)
 Company.belongsTo(Market, { foreignKey: 'marketId' });
+// Company.hasMany(Market, { foreignKey: 'marketId' });
+// Company.belongsTo(Market, { foreignKey: 'marketId' });
 
 //Sumary
-Company.hasMany(Sumary, { foreignKey: 'sumaryId' });
+Company.hasMany(Sumary)
 Company.belongsTo(Sumary, { foreignKey: 'sumaryId' });
+// Company.hasMany(Sumary, { foreignKey: 'sumaryId' });
+// Company.belongsTo(Sumary, { foreignKey: 'sumaryId' });
 
 //Documents
-Company.hasOne(Document, { foreignKey: 'documentId' });
+Company.hasOne(Document)
 Document.belongsTo(Company, { foreignKey: 'documentId' });
+// Company.hasOne(Document, { foreignKey: 'documentId' });
+// Document.belongsTo(Company, { foreignKey: 'documentId' });
 
 //Sector
-Company.hasOne(Sector, { foreignKey: 'sectorId' });
+Company.hasOne(Sector)
 Sector.belongsTo(Company, { foreignKey: 'sectorId' });
+// Company.hasOne(Sector, { foreignKey: 'sectorId' });
+// Sector.belongsTo(Company, { foreignKey: 'sectorId' });
 
 module.exports = Company;

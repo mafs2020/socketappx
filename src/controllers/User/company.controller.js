@@ -51,7 +51,7 @@ const create2 = catchError(async (req, res) => {
 const create = catchError(async (req, res) => {
     //Datos a guardar
     const { users, companys, address, sector } = req.body;
-    // console.log('datos', users, companys, address, sector);
+    const ussse = JSON.parse(users);
     const transaction = await sequelize.transaction();
     try{
         //Guardar las imagenes
@@ -99,10 +99,25 @@ const create = catchError(async (req, res) => {
         console.log('sector')
 
         // Crear User asociado con Company
+        
+        const encriptedPassword = await bcrypt.hash(ussse.password, 10);
         const uss = await User.create({
             ...JSON.parse(users),
             companyId: comp.id,
-            urlImg: urls[0]
+            isAdmin: true,
+            status: "Active",
+            urlImg: urls[0],
+            password: encriptedPassword,
+            firstName: ussse.firstName,
+            lastName: ussse.lastName,
+            email: ussse.email,
+            userName: ussse.userName,
+            phone: ussse.phone,
+            timeZone: ussse.timeZone,
+            language: ussse.language,
+            referenceCurrency: ussse.referenceCurrency,
+            dateOfBirth: ussse.dateOfBirth,
+            position: ussse.position,
         }, { transaction });
         console.log('user')
 

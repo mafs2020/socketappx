@@ -1,5 +1,6 @@
 const { DataTypes, UUID } = require("sequelize");
 const sequelize = require("../../utils/connection");
+const Address = require("../Address/Address");
 
 const Auction = sequelize.define("auction",{
     id: {
@@ -59,7 +60,6 @@ const Auction = sequelize.define("auction",{
         allowNull: false,
         comment: "Fecha de fin de la subasta real",
     },
-    //auctionDetails
     //auctionGuest
   },
   {
@@ -70,5 +70,9 @@ const Auction = sequelize.define("auction",{
     updatedAt: false,
   }
 );
+
+//Address
+Auction.hasOne(Address)
+Address.belongsTo(Auction, { foreignKey: 'addressId' });
 
 module.exports = Auction;

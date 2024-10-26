@@ -7,12 +7,12 @@ const getAll = catchError(async(req, res) => {
     const pageSize = parseInt(req.query.pageSize) || 20;
     const offset = (page - 1) * pageSize;
     //Recibe el id de la subasta
-    let idAuction = req.body.idAuction;
+    let auctionId = req.body.auctionId;
     const results = await GuestBid.findAndCountAll({
         limit: pageSize,
         offset: offset,
         include: [
-            { model: AuctionGuest, where: idAuction }
+            { model: AuctionGuest, where: auctionId }
         ],
     });
     const response = {
@@ -27,12 +27,12 @@ const getAll = catchError(async(req, res) => {
 
 const getWinner = catchError(async(req, res) => {
     //Recibe el id de la subasta
-    let idAuction = req.body.idAuction;
+    let auctionId = req.body.auctionId;
     let winnerBid = true;
     const results = await GuestBid.findOne({
         where: winnerBid, 
         include: [ 
-            {model: AuctionGuest, where: idAuction} 
+            {model: AuctionGuest, where: auctionId} 
     ]});
     return res.json(results);
 });

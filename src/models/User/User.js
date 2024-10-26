@@ -2,7 +2,7 @@ const { DataTypes, UUID } = require("sequelize");
 const sequelize = require("../../utils/connection");
 const Address = require('../Address/Address')
 const Summary = require('../Order/SummaryTransaction')
-const Rol = require('./Rol')
+const Rol = require('./Rol');
 
 const User = sequelize.define(
   "user",
@@ -65,6 +65,10 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
     //addressId
     //summaryId
     //rolId
@@ -79,15 +83,24 @@ const User = sequelize.define(
 );
 
 //Address
-User.hasMany(Address, { foreignKey: 'userId' });
+User.hasMany(Address)
 User.belongsTo(Address, { foreignKey: 'userId' });
+// Address.hasOne(User)
+// User.hasMany(Address, { foreignKey: 'userId' });
+// User.belongsTo(Address, { foreignKey: 'userId' });
 
 //Sumary
-User.hasMany(Summary, { foreignKey: 'userId' });
+User.hasMany(Summary)
 User.belongsTo(Summary, { foreignKey: 'userId' });
+// Summary.hasOne(User)
+// User.hasMany(Summary, { foreignKey: 'userId' });
+// User.belongsTo(Summary, { foreignKey: 'userId' });
 
 //Rol
-User.hasMany(Rol, { foreignKey: 'userId' });
+User.hasMany(Rol)
 User.belongsTo(Rol, { foreignKey: 'userId' });
+// Rol.hasMany(User)
+// User.hasMany(Rol, { foreignKey: 'userId' });
+// User.belongsTo(Rol, { foreignKey: 'userId' });
 
 module.exports = User;

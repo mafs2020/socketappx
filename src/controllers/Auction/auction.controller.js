@@ -1,6 +1,5 @@
 const catchError = require('../../utils/catchError');
 const Auction = require('../../models/Auction/Auction');
-const AuctionDetails = require('../../models/Auction/AuctionDetails');
 const AuctionGuest = require('../../models/Auction/AuctionGuest');
 const GuestBid = require('../../models/Auction/GuestBid');
 
@@ -12,7 +11,6 @@ const getAll = catchError(async(req, res) => {
         limit: pageSize,
         offset: offset,
         include: [
-            { model: AuctionDetails },
             { model: AuctionGuest },
         ],
     });
@@ -35,7 +33,6 @@ const getAllWinner = catchError(async(req, res) => {
         limit: pageSize,
         offset: offset,
         include: [
-            { model: AuctionDetails },
             { model: AuctionGuest },
             { model: GuestBid, where: {winnerBid: true} },
         ],
@@ -52,15 +49,7 @@ const getAllWinner = catchError(async(req, res) => {
 
 const create = catchError(async(req, res) => {
     let body = req.body;
-    const result = await Auction.create({...body, AuctionDetails: undefined});
-    let idAu = JSON.stringify(result.id);
-    let id_au = idAu.replace("\"", "").replace("\"", "");
-    const detAu = {
-        idAuction: id_au,
-        idProduct: req.body.idProduct,
-        idAddress: req.body.idAddress
-    };
-    await AuctionDetails.create(detAu);
+    const result = await Auction.create({...body});
     return res.status(201).json(result);
 });
 
@@ -68,7 +57,6 @@ const getOne = catchError(async(req, res) => {
     const { id } = req.params;
     const result = await Auction.findByPk({id, 
         include: [
-        { model: AuctionDetails },
         { model: AuctionGuest },
     ]});
     if(!result) return res.sendStatus(404);

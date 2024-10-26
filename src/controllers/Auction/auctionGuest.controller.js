@@ -3,8 +3,8 @@ const AuctionGuest = require('../../models/Auction/AuctionGuest')
 
 const getAll = catchError(async(req, res) => {
     //Recibe el id de la subasta
-    let idAuction = req.body.idAuction;
-    const results = await AuctionGuest.findAll({where: idAuction});
+    let auctionId = req.body.auctionId;
+    const results = await AuctionGuest.findAll({where: auctionId});
     return res.json(results);
 });
 
@@ -16,9 +16,9 @@ const create = catchError(async(req, res) => {
 
 const getOne = catchError(async(req, res) => {
     //Recibe el id de la subasta
-    let idAuction = req.body.idAuction;
+    let auctionId = req.body.auctionId;
     const { id } = req.params;
-    const result = await AuctionGuest.findOne( {where: id, idAuction});
+    const result = await AuctionGuest.findOne( {where: id, auctionId});
     if(!result) return res.sendStatus(404);
     return res.json(result);
 });
