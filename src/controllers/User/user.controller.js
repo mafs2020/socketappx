@@ -234,6 +234,7 @@ const changeNewPassword = catchError(async (req, res) => {
         position: user.position,
         password: encriptedPassword,
         isAdmin: user.isAdmin,
+        status: "Active",
         companyId}, 
         { transaction });
     if(!resultUser) {
@@ -253,6 +254,116 @@ const changeNewPassword = catchError(async (req, res) => {
         address: resultAddress
     });
 });
+
+const updateUserAddress = catchError(async(req, res) => {
+    const { user, address, addressId, userId } = req.body;
+    // console.log('user', user)
+    console.log('address', address)
+    // console.log('userId', userId)
+    // console.log('addressId', addressId)
+    const transaction = await sequelize.transaction();
+
+    if(addressId != ''){
+        //Update
+        const updUser = await User.update(user, {
+            where: { id: userId }
+        }, {transaction})
+        if(!updUser) {
+            await transaction.rollback();
+            return res.status(401).json({ message: "Error al modificar el usuario", error: updUser });
+        }
+
+        const updAddr = await Address.update(address, {
+            where: {id: addressId}
+        }, {transaction})
+        if(!updAddr) {
+            await transaction.rollback();
+            return res.status(401).json({ message: "Error al actualizar el usuario", error: updAddr });
+        }
+
+        await transaction.commit();
+        return res.status(200).json({
+            user: updUser,
+            address: updAddr
+        });
+    } else {
+        //update e insert address
+        const updUser = await User.update(user, {
+            where: { id: userId }
+        }, {transaction})
+        if(!updUser) {
+            await transaction.rollback();
+            return res.status(401).json({ message: "Error al modificar el usuario", error: updUser });
+        }
+
+        const updAddr = await Address.create({...address, userId: userId}, {transaction})
+        if(!updAddr) {
+            await transaction.rollback();
+            return res.status(401).json({ message: "Error al crear el usuario", error: updAddr });
+        }
+
+        await transaction.commit();
+        return res.status(200).json({
+            user: updUser,
+            address: updAddr
+        });
+    }
+});
+
+const updatePasswordUser = catchError(async(req, res) => {
+    const { password, userId } = req.body;
+    // console.log('password', password)
+    const encriptedPassword = await bcrypt.hash(password, 10);
+    const transaction = await sequelize.transaction();
+
+    const updUser = await User.update({password: encriptedPassword}, {
+        where: { id: userId }
+    }, {transaction})
+    if(!updUser) {
+        await transaction.rollback();
+        return res.status(401).json({ message: "Error al modificar la contraseña del usuario", error: updUser });
+    }
+
+    await transaction.commit();
+    return res.status(200).json({user: updUser});
+});
+
+const deleteUser = catchError(async(req, res) => {
+    const { id } = req.body;
+    const transaction = await sequelize.transaction();
+
+    // console.log('address begin')
+    const updAddress =  await Address.destroy({ where: {userId: id} }, {transaction});
+    if(!updAddress) {
+        await transaction.rollback();
+        return res.status(401).json({ message: "Error al eliminar el usuario", error: updAddress });
+    }
+    // console.log('address end')
+
+    const updUser =  await User.destroy({ where: {id} }, {transaction});
+    if(!updUser) {
+        await transaction.rollback();
+        return res.status(401).json({ message: "Error al eliminar el usuario", error: updUser });
+    }
+
+    await transaction.commit();
+    return res.status(200).json({user: updUser, address: updAddress});
+});
+
+const cambiarStatusUser = catchError(async(req, res) => {
+    const { id, status } = req.body;
+    const transaction = await sequelize.transaction();
+
+    const updUser =  await User.update({status},{ where: {id} }, {transaction});
+    if(!updUser) {
+        await transaction.rollback();
+        return res.status(401).json({ message: "Error al "+status+" el usuario", error: updUser });
+    }
+
+    await transaction.commit();
+    return res.status(200).json({user: updUser});
+});
+
 
 const getAllUsersCompany = catchError(async(req, res) => {
     const { companyId } = req.body;
@@ -276,4 +387,8 @@ module.exports = {
     changeNewPassword,
     createUserAddress,
     getAllUsersCompany,
+    updateUserAddress,
+    updatePasswordUser,
+    deleteUser,
+    cambiarStatusUser,
 }
