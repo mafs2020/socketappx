@@ -14,6 +14,8 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   connectionStateRecovery: {},
   ackTimeout: 10000,
+  pingTimeout: 3600000, // 24 horas
+  pingInterval: 3600000,
   retries: 3,
   cors: {
     origin: "*",
