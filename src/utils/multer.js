@@ -20,7 +20,7 @@ const fs = require("fs");
 // Configure Multer to use /tmp directory for storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, '/tmp');
+    cb(null, './uploads');// Cambia 'C:/tmp' por './uploads' o una ruta similar
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);

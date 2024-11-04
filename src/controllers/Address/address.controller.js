@@ -71,10 +71,46 @@ const update = catchError(async(req, res) => {
     return res.json({Address: result[1][0], AddressType: result1[1][0]});
 });
 
+const getAllByUserID = catchError(async(req, res) => {
+    const {userId} = req.body;
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 20;
+    const offset = (page - 1) * pageSize;
+    const results = await Address.findAndCountAll({
+        where: {userId},
+        limit: pageSize,
+        offset: offset,
+    });
+    const response = {
+    totalRecords: results.count,
+    totalPages: Math.ceil(results.count / pageSize),
+    currentPage: page,
+    pageSize: pageSize,
+    data: results.rows,
+    };
+    if(!results) {
+        return res.status(401).json({ message: "Error al consultar los domicilios", error: results });
+    }
+    return res.json(response)
+});
+
+const createUserId = catchError(async(req, res) => {
+    const {userId, address} = req.body;
+    console.log("userId", userId)
+    console.log("address", address)
+    const result = await Address.create({...address, userId});
+    if(!result) {
+        return res.status(401).json({ message: "Error al crear el domicilio", error: result });
+    }
+    return res.json(result)
+});
+
 module.exports = {
     getAll,
     create,
     getOne,
     remove,
-    update
+    update,
+    getAllByUserID,
+    createUserId,
 }
