@@ -127,7 +127,7 @@ module.exports = (io) => {
       // io.to(``).emit("some event");
 
       // todo este hace que se emita un evento excepto a quien lo hizo
-      // socket.to(`${room}`).emit("puja", { monto: monto });
+      // socket.to(`${room}`).emit(`puja-${room}`, { monto: monto });
       // todo este evento hace que a todos incluido el sender reciba actualizacion
       io.to(`puja-${room}`).emit(`puja-${room}`, { monto: monto });
     });
