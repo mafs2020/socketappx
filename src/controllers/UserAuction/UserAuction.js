@@ -1,14 +1,15 @@
 const catchError = require("../../utils/catchError");
 const UserAuction = require("../../models/UserAuction/UserAuction");
+const User = require("../../models/User/User");
+const Auction = require("../../models/Auction/Auction");
 
 const getAll = catchError(async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const pageSize = parseInt(req.query.pageSize) || 20;
+  const { page = 1, pageSize = 20 } = req.query;
   const offset = (page - 1) * pageSize;
   const results = await UserAuction.findAndCountAll({
     limit: pageSize,
     offset: offset,
-    include: [{ model: UserAuctionType }],
+    include: [{ model: User }, { model: Auction }],
   });
   const response = {
     totalRecords: results.count,
@@ -24,18 +25,18 @@ const create = catchError(async (req, res) => {
   let body = req.body;
   const result = await UserAuction.create({
     ...body,
-    UserAuctionType: undefined,
+    // UserAuctionType: undefined,
   });
-  let idUserAuction = JSON.stringify(result.id);
-  let p = idUserAuction.replace('"', "").replace('"', "");
-  // console.log('idUserAuction: ', p)
-  for (let i = 0; i < body.UserAuctionType.length; i++) {
-    const addType = {
-      UserAuctionType: body.UserAuctionType[i].UserAuctionType,
-      UserAuctionId: p,
-    };
-    await UserAuctionType.create(addType);
-  }
+  //   let idUserAuction = JSON.stringify(result.id);
+  //   let p = idUserAuction.replace('"', "").replace('"', "");
+  //   // console.log('idUserAuction: ', p)
+  //   for (let i = 0; i < body.UserAuctionType.length; i++) {
+  //     const addType = {
+  //       UserAuctionType: body.UserAuctionType[i].UserAuctionType,
+  //       UserAuctionId: p,
+  //     };
+  //     await UserAuctionType.create(addType);
+  //   }
   return res.status(201).json(result);
 });
 
