@@ -1,4 +1,4 @@
-const { getAll, create, getOne, remove, update 
+const { getAll, create, getOne, remove, update, getAllByUserID, createUserId
 } = require('../../controllers/Address/address.controller');
 const express = require('express');
 
@@ -12,5 +12,8 @@ addressRouter.route('/address/:id')
     .get(getOne)
     .delete(remove)
     .put(update);
+
+addressRouter.route('/address/userid').post(getAllByUserID)
+addressRouter.route('/address/create/userid').post(createUserId)
 
 module.exports = addressRouter;

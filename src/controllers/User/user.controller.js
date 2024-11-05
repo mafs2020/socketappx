@@ -98,7 +98,10 @@ const getOne = catchError(async(req, res) => {
     const { id } = req.params;
     const result = await User.findAll({
         where: {id},
-        include :[{ model: Address}]
+        include :[{ 
+            model: Address,
+            where: {mainAddress: true}
+        }]
     });
     if(!result) return res.sendStatus(404);
     return res.json(result);

@@ -54,6 +54,11 @@ const Address = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    mainAddress: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     //userId
     //addressType
   },

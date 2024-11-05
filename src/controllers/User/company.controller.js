@@ -5,6 +5,7 @@ const Address = require('../../models/Address/Address');
 const Document = require('../../models/User/Document');
 const Sector = require('../../models/User/Sectror');
 const sequelize = require("../../utils/connection");
+const bcrypt = require("bcrypt");
 const {
     uploadToCloudinary,
     deleteFromCloudinary,
@@ -51,36 +52,38 @@ const create2 = catchError(async (req, res) => {
 const create = catchError(async (req, res) => {
     //Datos a guardar
     const { users, companys, address, sector } = req.body;
+    // console.log("datos: ", JSON.parse(users), JSON.parse(companys), JSON.parse(address), JSON.parse(sector))
     const ussse = JSON.parse(users);
     const transaction = await sequelize.transaction();
     try{
         //Guardar las imagenes
         const files = req.files;
-        console.log('files', files)
+        // console.log('files', files)
         const urls = [];
         for (const file of files) {
             const { secure_url } = await uploadToCloudinary(file);//secure_url
             urls.push(secure_url);
         }
-        console.log('urls', urls)
-
-        
-    
-        // Crear Address
-        const addr = await Address.create(JSON.parse(address), { transaction });
-        console.log('address')
+        // console.log('urls', urls)
 
         // Crear Company y asociarla con Address
         const comp = await Company.create({
             ...JSON.parse(companys),
             addressId: addr.id,
-            urlImg: urls[1]
+            urlImg: urls[1],
+            isVerified: false
         }, { transaction });
-        console.log('company')
+        // console.log('company')
+
+        // Crear Address
+        const addr = await Address.create({
+            ...JSON.parse(address), 
+            companyId: comp.id
+        }, { transaction });
+        // console.log('address')
 
         // Crear Document asociado con Company
         const doc = await Document.create({
-            // ...document,
             taxStatus: urls[2],
             address: urls[3],
             bankDetails: urls[4],
@@ -89,14 +92,14 @@ const create = catchError(async (req, res) => {
             legalPower: urls[7],
             companyId: comp.id
         }, { transaction });
-        console.log('documents')
+        // console.log('documents')
 
         // Crear Sector asociado con Company
         const sec = await Sector.create({
             ...JSON.parse(sector),
             companyId: comp.id
         }, { transaction });
-        console.log('sector')
+        // console.log('sector')
 
         // Crear User asociado con Company
         
@@ -119,7 +122,7 @@ const create = catchError(async (req, res) => {
             dateOfBirth: ussse.dateOfBirth,
             position: ussse.position,
         }, { transaction });
-        console.log('user')
+        // console.log('user')
 
         // Confirmar la transacción si todo es exitoso
         await transaction.commit();
@@ -162,11 +165,64 @@ const update = catchError(async(req, res) => {
     return res.json(result[1][0]);
 });
 
+const getAllRegister = catchError(async(req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 20;
+    const offset = (page - 1) * pageSize;
+    // console.log("datos", page, pageSize, offset)
+    const results = await Company.findAndCountAll({
+        limit: pageSize,
+        offset: offset
+    });
+
+    if(!results) {
+        return res.status(401).json({ message: "Error al consultar las compañias", error: results });
+    }
+
+    const response = {
+    totalRecords: results.count,
+    totalPages: Math.ceil(results.count / pageSize),
+    currentPage: page,
+    pageSize: pageSize,
+    data: results.rows,
+    };
+    return res.json(response);
+});
+
+const getOneWithAddress = catchError(async(req, res) => {
+    const { id } = req.params;
+    const result = await Company.findAll({
+        where: { id },
+        include: [{ 
+            model: Address,
+            where:{mainAddress: true}
+         }]
+    });
+    if(!result) return res.sendStatus(404);
+    return res.json(result);
+});
+
+const updateStatus = catchError(async(req, res) => {
+    const { id, isVerified } = req.body;
+    console.log("datos", id, isVerified)
+    const result = await Company.update(
+        {isVerified},
+        { where: {id}, returning: true }
+    );
+    if(result[0] === 0) {
+        return res.status(401).json({ message: "Error al actualizar las compañias", error: result });
+    }
+    return res.json(result[1][0]);
+});
+
 module.exports = {
     getAll,
     create,
     getOne,
     remove,
     update,
-    create2
+    create2,
+    getAllRegister,
+    getOneWithAddress,
+    updateStatus,
 }
