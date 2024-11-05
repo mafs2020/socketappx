@@ -4,7 +4,7 @@ const {
   getOne,
   remove,
   update,
-} = require("../../controllers/Auction/auctionGuest.controller");
+} = require("../../controllers/UserAuction/UserAuction");
 const express = require("express");
 
 const auctionGuestRouter = express.Router();

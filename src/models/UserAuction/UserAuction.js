@@ -17,7 +17,7 @@ const UserAction = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    AuctionID: {
+    auctionId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -31,7 +31,10 @@ const UserAction = sequelize.define(
   }
 );
 
-Auction.belongsToMany(User, { through: "UserAuction" });
-User.belongsToMany(Auction, { through: "UserAuction" });
+Auction.belongsToMany(User, {
+  foreignKey: "auctionId",
+  through: "UserAuction",
+});
+User.belongsToMany(Auction, { foreignKey: "userId", through: "UserAuction" });
 
 module.exports = UserAction;
