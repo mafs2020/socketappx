@@ -2,9 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/connection");
 const Product = require('./Product')
 
-const Category = sequelize.define(
-  "category",
-  {
+const Category = sequelize.define("category",{
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
@@ -35,9 +33,8 @@ const Category = sequelize.define(
   }
 );
 
-Product.hasMany(Category)
+//Producto
+Product.hasMany(Category, { foreignKey: 'productId' })
 Category.belongsTo(Product, { foreignKey: 'productId' });
-// Product.hasMany(Category, { foreignKey: 'productId' });
-// Category.belongsTo(Product, { foreignKey: 'productId' });
 
 module.exports = Category;

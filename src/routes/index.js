@@ -12,6 +12,8 @@ const companyRouter = require("./User/company.router");
 const summaryRouter = require("./Order/summaryTransaction.router");
 const documentRouter = require("./User/document.router");
 const userActionRouter = require("./UserAction/UserAction.router");
+const locationIQRouter = require("./locationIQ.routes")
+const categoryRouter = require("./Product/category.router")
 
 // colocar las rutas aquí
 
@@ -35,5 +37,9 @@ router.use(guestBidRouter);
 
 //Product
 router.use(productRouter);
+router.use(categoryRouter)
+
+//Get Token
+router.use(locationIQRouter)
 
 module.exports = router;

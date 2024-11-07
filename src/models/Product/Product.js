@@ -1,22 +1,22 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/connection");
 const Metafield = require('./MetaField')
-const Price = require('./Price')
-const Stock = require('./Stock')
-const Variant = require('./VariantProduct')
+const VariantProduct = require('./VariantProduct')
 
-const Product = sequelize.define(
-  "product",
-  {
+const Product = sequelize.define("product",{
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       allowNull: false,
       defaultValue: DataTypes.UUIDV4,
     },
-    sku: {
-      type: DataTypes.STRING,
-      comment: "16 caracteres",
+    // sku: {
+    //   type: DataTypes.STRING,
+    //   comment: "16 caracteres",
+    //   allowNull: false,
+    // },
+    name: {
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     description: {
@@ -35,8 +35,7 @@ const Product = sequelize.define(
     //PricesId
     //Stock
     //VariantId
-  },
-  {
+  },{
     tableName: "product",
     freezeTableName: true,
     timestamps: true,
@@ -46,27 +45,11 @@ const Product = sequelize.define(
 );
 
 //Metafield
-Product.hasMany(Metafield)
-Product.belongsTo(Metafield, { foreignKey: 'ProductId' });
-// Product.hasMany(Metafield, { foreignKey: 'ProductId' });
-// Product.belongsTo(Metafield, { foreignKey: 'ProductId' });
-
-//Price
-Product.hasMany(Price)
-Product.belongsTo(Price, { foreignKey: 'ProductId' });
-// Product.hasMany(Price, { foreignKey: 'ProductId' });
-// Product.belongsTo(Price, { foreignKey: 'ProductId' });
-
-//Stock
-Product.hasMany(Stock)
-Product.belongsTo(Stock, { foreignKey: 'ProductId' });
-// Product.hasMany(Stock, { foreignKey: 'ProductId' });
-// Product.belongsTo(Stock, { foreignKey: 'ProductId' });
+Product.hasMany(Metafield, { foreignKey: 'productId' })
+Product.belongsTo(Metafield, { foreignKey: 'productId' });
 
 //Variant
-Product.hasMany(Variant)
-Product.belongsTo(Variant, { foreignKey: 'ProductId' });
-// Product.hasMany(Variant, { foreignKey: 'ProductId' });
-// Product.belongsTo(Variant, { foreignKey: 'ProductId' });
+Product.hasMany(VariantProduct, { foreignKey: 'variantProductId' })
+Product.belongsTo(VariantProduct, { foreignKey: 'variantProductId' });
 
 module.exports = Product;

@@ -1,9 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/connection");
 
-const MetaField = sequelize.define(
-  "metaField",
-  {
+const MetaField = sequelize.define("metaField",{
     id: {
       type: DataTypes.UUID,
       primaryKey: true,

@@ -14,11 +14,11 @@ const Stock = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    sku: {
-      type: DataTypes.STRING,
-      comment: "16 caracteres",
-      allowNull: false,
-    },
+    // sku: {
+    //   type: DataTypes.STRING,
+    //   comment: "16 caracteres",
+    //   allowNull: false,
+    // },
     stock: {
       type: DataTypes.BIGINT,
       allowNull: true,
