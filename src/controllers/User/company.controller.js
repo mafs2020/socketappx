@@ -215,6 +215,19 @@ const updateStatus = catchError(async(req, res) => {
     return res.json(result[1][0]);
 });
 
+const updateCompanyData = catchError(async(req, res) => {
+    const {company} = req.body;
+    const { id } = req.params;
+    const result = await Company.update(
+        {...company}, 
+        {where: {id}, returning: true}
+    );
+    if(result[0] === 0) {
+        return res.status(401).json({ message: "Error al actualizar la compañia", error: result });
+    }
+    return res.json({Address: result[1][0]});
+});
+
 module.exports = {
     getAll,
     create,
@@ -225,4 +238,5 @@ module.exports = {
     getAllRegister,
     getOneWithAddress,
     updateStatus,
+    updateCompanyData,
 }

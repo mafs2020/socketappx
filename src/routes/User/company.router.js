@@ -1,5 +1,5 @@
 const { 
-    getAll, create, getOne, remove, update, create2, getAllRegister, getOneWithAddress, updateStatus,
+    getAll, create, getOne, remove, update, create2, getAllRegister, getOneWithAddress, updateStatus, updateCompanyData,
 } = require('../../controllers/User/company.controller');
 const express = require('express');
 const upload = require("../../utils/multer");
@@ -19,6 +19,8 @@ CompanyRouter.route('/companyGetAll').get(getAllRegister);
 CompanyRouter.route('/companyAddress/:id').get(getOneWithAddress)
 
 CompanyRouter.route('/companyUpdateStatus').post(updateStatus)
+
+CompanyRouter.route("/company/update/:id").put(updateCompanyData);
 
 CompanyRouter.route('/imagens').post(upload.array("files", 9),create2);
 

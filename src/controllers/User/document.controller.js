@@ -33,7 +33,7 @@ const getOne = catchError(async(req, res) => {
 
 const getOneByCompany = catchError(async(req, res) => {
     const { id } = req.body;
-    console.log("id", id)
+    // console.log("id", id)
     const result = await Document.findOne({where: {companyId: id}});
     if(!result) return res.status(400).json({ message: "Error al consultar los documentos de la compañia", result });
     return res.json({document: result});

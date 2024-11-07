@@ -1,6 +1,6 @@
 const { getAll, create, getOne, remove, update, login, 
     changeNewPassword, createUserAddress, getAllUsersCompany, updateUserAddress, 
-    updatePasswordUser, deleteUser, cambiarStatusUser,
+    updatePasswordUser, deleteUser, cambiarStatusUser, updateUserData,
 } = require('../../controllers/User/user.controller');
 const express = require('express');
 
@@ -23,5 +23,6 @@ UserRouter.route("/user/updateUsAd").post(updateUserAddress);
 UserRouter.route("/user/updatePass").post(updatePasswordUser);
 UserRouter.route("/user/delete").post(deleteUser);
 UserRouter.route("/user/status").post(cambiarStatusUser);
+UserRouter.route("/user/update/:id").put(updateUserData);
 
 module.exports = UserRouter;

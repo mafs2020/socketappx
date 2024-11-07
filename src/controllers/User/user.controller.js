@@ -6,6 +6,7 @@ const Address = require('../../models/Address/Address');
 const Rol = require('../../models/User/Rol');
 const AddressType = require('../../models/Address/AddressType');
 const sequelize = require("../../utils/connection");
+const Company = require('../../models/User/Company');
 
 const getAll = catchError(async(req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -170,14 +171,15 @@ const login = catchError(async(req, res) => {
     } else {
         user = await User.findOne({ where: { userName } });
     }
-    // const user = await User.findOne({ where: { email:lowerCaseEmail } });
     if (!user) return res.status(401).json({ message: "Credenciales invalidas" });
     else {
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid)
         return res.status(401).json({ message: "Credenciales invalidas" });
         else {
-        const token = jwt.sign({ user }, process.env.TOKEN_SECRET, {
+            const company = await Company.findOne({ where: { id: user.companyId } });
+            if (!company) return res.status(401).json({ message: "Credenciales invalidas" });
+            const token = jwt.sign({ user }, process.env.TOKEN_SECRET, {
             expiresIn: "1d",
         });
         const us = {
@@ -190,7 +192,8 @@ const login = catchError(async(req, res) => {
             position: user.position,
             urlImg: user.urlImg,
             companyId: user.companyId,
-            isAdmin: user.isAdmin
+            isAdmin: user.isAdmin,
+            companyName: company.name
         }
         return res.json({ user: us, token });
         }
@@ -380,6 +383,19 @@ const getAllUsersCompany = catchError(async(req, res) => {
     return res.json(result);
 });
 
+const updateUserData = catchError(async(req, res) => {
+    const {user} = req.body;
+    const { id } = req.params;
+    const result = await User.update(
+        {...user}, 
+        {where: {id}, returning: true}
+    );
+    if(result[0] === 0) {
+        return res.status(401).json({ message: "Error al actualizar el usuario", error: result });
+    }
+    return res.json({Address: result[1][0]});
+});
+
 module.exports = {
     getAll,
     create,
@@ -394,4 +410,5 @@ module.exports = {
     updatePasswordUser,
     deleteUser,
     cambiarStatusUser,
+    updateUserData,
 }
