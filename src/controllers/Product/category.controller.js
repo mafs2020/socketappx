@@ -1,5 +1,9 @@
 const catchError = require('../../utils/catchError');
 const Category = require("../../models/Product/Category");
+const {
+    uploadToCloudinary,
+    deleteFromCloudinary,
+  } = require("../../utils/cloudinary");
 
 const getAll = catchError(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -21,9 +25,18 @@ const getAll = catchError(async (req, res) => {
 
 const create = catchError(async(req, res) => {
   const { category } = req.body;
-  try {
-    const categrory = await Category.create({ ...category });
-    return res.json(categrory);
+//   console.log("category", category)
+  try{
+    const files = req.files;
+    // console.log('files', files)
+    const urls = [];
+    for (const file of files) {
+        const { secure_url } = await uploadToCloudinary(file);//secure_url
+        urls.push(secure_url);
+    }
+    // console.log('urls', urls)
+    const categrory = await Category.create({ ...JSON.parse(category), urlImg: urls[0] });
+    return res.status(200).json({categrory});
   } catch (error) {
     return res.status(404).json({message: "Error al crear la categoría", error });
   }
@@ -39,12 +52,34 @@ const getOne = catchError(async(req, res) => {
   }
 });
 
+const updateFile = catchError(async(req, res) => {
+  const { id } = req.params;
+  const { category } = req.body;
+  try{
+    const files = req.files;
+    // console.log('files', files)
+    const urls = [];
+    for (const file of files) {
+        const { secure_url } = await uploadToCloudinary(file);//secure_url
+        urls.push(secure_url);
+    }
+    console.log('urls', urls)
+    const categrory = await Category.update(
+      { ...JSON.parse(category), urlImg: urls[0] },
+      { where: { id }, returning: true }
+      );
+    return res.status(200).json({categrory});
+  } catch (error) {
+    return res.status(404).json({message: "Error al actualizar la categoría", error });
+  }
+});
+
 const update = catchError(async(req, res) => {
     const { id } = req.params;
-    const { name, description, urlImg } = req.body;
+    const { category } = req.body;
     try {
         const categrory = await Category.update(
-        { name, description, urlImg },
+        { ...category },
         { where: { id }, returning: true }
         );
         return res.json(categrory);
@@ -63,4 +98,4 @@ const remove = catchError(async(req, res) => {
     }
 });
 
-module.exports = { getAll, create, getOne, update, remove };
+module.exports = { getAll, create, getOne, update, remove, updateFile };

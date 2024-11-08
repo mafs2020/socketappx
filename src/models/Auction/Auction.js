@@ -72,7 +72,7 @@ const Auction = sequelize.define("auction",{
 );
 
 //Address
-Auction.hasOne(Address)
+Auction.hasOne(Address, { foreignKey: 'addressId' })
 Address.belongsTo(Auction, { foreignKey: 'addressId' });
 
 module.exports = Auction;

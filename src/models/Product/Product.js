@@ -1,7 +1,9 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/connection");
 const Metafield = require('./MetaField')
-const VariantProduct = require('./VariantProduct')
+const VariantProduct = require('./VariantProduct');
+const Category = require("./Category");
+const Company = require("../User/Company")
 
 const Product = sequelize.define("product",{
     id: {
@@ -31,6 +33,22 @@ const Product = sequelize.define("product",{
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    categoryId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      references: {
+        model: Category,
+        key: 'id'
+      }
+    },
+    companyId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      references: {
+        model: Company,
+        key: 'id'
+      }
+    },
     //MetaField ---> unitOfMeasurement
     //PricesId
     //Stock
@@ -49,7 +67,7 @@ Product.hasMany(Metafield, { foreignKey: 'productId' })
 Product.belongsTo(Metafield, { foreignKey: 'productId' });
 
 //Variant
-Product.hasMany(VariantProduct, { foreignKey: 'variantProductId' })
-Product.belongsTo(VariantProduct, { foreignKey: 'variantProductId' });
+Product.hasMany(VariantProduct, { foreignKey: 'productId' })
+Product.belongsTo(VariantProduct, { foreignKey: 'productId' });
 
 module.exports = Product;

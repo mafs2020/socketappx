@@ -136,7 +136,7 @@ const create = catchError(async (req, res) => {
     } catch (error) {
         // Revertir la transacción si hay algún error
         await transaction.rollback();
-        console.error('Error al crear los registros:', error);
+        // console.error('Error al crear los registros:', error);
         return res.status(400).json({ message: "Error al guardar los datos", error });
     }
 });
