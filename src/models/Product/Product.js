@@ -34,7 +34,7 @@ const Product = sequelize.define("product",{
       allowNull: true,
     },
     categoryId: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: Category,
@@ -42,7 +42,7 @@ const Product = sequelize.define("product",{
       }
     },
     companyId: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
       allowNull: true,
       references: {
         model: Company,
