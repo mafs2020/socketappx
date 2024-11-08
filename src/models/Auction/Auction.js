@@ -60,6 +60,14 @@ const Auction = sequelize.define("auction",{
         allowNull: false,
         comment: "Fecha de fin de la subasta real",
     },
+    addressId: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+          model: Address,
+          key: 'id'
+        }
+    },
     //auctionGuest
   },
   {
@@ -72,7 +80,7 @@ const Auction = sequelize.define("auction",{
 );
 
 //Address
-Auction.hasOne(Address, { foreignKey: 'addressId' })
-Address.belongsTo(Auction, { foreignKey: 'addressId' });
+// Auction.hasOne(Address, { foreignKey: 'addressId' })
+// Address.belongsTo(Auction, { foreignKey: 'addressId' });
 
 module.exports = Auction;
