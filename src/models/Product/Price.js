@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/connection");
+const VariantProduct = require("./VariantProduct");
 
 const Price = sequelize.define("price",{
     id: {
@@ -49,4 +50,9 @@ const Price = sequelize.define("price",{
     updatedAt: false,
   }
 );
+
+//Price
+VariantProduct.hasMany(Price, { foreignKey: 'variantProductId' })
+Price.belongsTo(VariantProduct, { foreignKey: 'variantProductId' });
+
 module.exports = Price;

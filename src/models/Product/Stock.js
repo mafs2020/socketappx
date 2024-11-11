@@ -1,9 +1,8 @@
 const { DataTypes, UUID } = require("sequelize");
 const sequelize = require("../../utils/connection");
+const VariantProduct = require("./VariantProduct");
 
-const Stock = sequelize.define(
-  "stock",
-  {
+const Stock = sequelize.define("stock",{
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
@@ -33,4 +32,5 @@ const Stock = sequelize.define(
     updatedAt: false,
   }
 );
+
 module.exports = Stock;

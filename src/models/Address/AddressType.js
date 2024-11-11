@@ -25,8 +25,8 @@ const AddressType = sequelize.define(
   }
 );
 
-Address.hasOne(AddressType, { foreignKey: 'addressId' })
-Address.belongsTo(AddressType, { foreignKey: 'addressId' });
+Address.hasOne(AddressType)
+// Address.belongsTo(AddressType, { foreignKey: 'addressTypeId' });
 // Address.hasOne(AddressType, { foreignKey: 'addressId' });
 // Address.belongsTo(AddressType, { foreignKey: 'addressId' });
 

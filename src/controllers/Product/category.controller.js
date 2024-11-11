@@ -25,7 +25,7 @@ const getAll = catchError(async (req, res) => {
 
 const create = catchError(async(req, res) => {
   const { category } = req.body;
-//   console.log("category", category)
+  // console.log("category", category)
   try{
     const files = req.files;
     // console.log('files', files)

@@ -3,10 +3,9 @@ const sequelize = require("../../utils/connection");
 const Price = require("./Price");
 const Stock = require("./Stock");
 const Product = require("./Product");
+const Company = require("../User/Company");
 
-const VariantProduct = sequelize.define(
-  "variantProduct",
-  {
+const VariantProduct = sequelize.define("variantProduct",{
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
@@ -44,11 +43,23 @@ const VariantProduct = sequelize.define(
 );
 
 //Price
-VariantProduct.hasMany(Price)
-VariantProduct.belongsTo(Price, { foreignKey: 'variantProductId' });
+// VariantProduct.hasMany(Price)
+// VariantProduct.belongsTo(Price, { foreignKey: 'variantProductId' });
 
 //Stock
-VariantProduct.hasMany(Stock)
-VariantProduct.belongsTo(Stock, { foreignKey: 'variantProductId' });
+// VariantProduct.hasMany(Stock)
+// VariantProduct.belongsTo(Stock, { foreignKey: 'variantProductId' });
+
+//Product
+Product.hasMany(VariantProduct, {as: 'variants'})
+// Product.belongsTo(VariantProduct);
+
+//Company
+Company.hasMany(VariantProduct)
+VariantProduct.belongsTo(Company, { foreignKey: 'companyId' });
+
+//Stock
+VariantProduct.hasMany(Stock, { foreignKey: 'variantProductId' });
+Stock.belongsTo(VariantProduct, { foreignKey: 'variantProductId' });
 
 module.exports = VariantProduct;

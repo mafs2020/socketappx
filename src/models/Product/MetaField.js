@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/connection");
+const Product = require("./Product");
 
 const MetaField = sequelize.define("metaField",{
     id: {
@@ -44,4 +45,9 @@ const MetaField = sequelize.define("metaField",{
     updatedAt: false,
   }
 );
+
+//Metafield
+Product.hasMany(MetaField)
+// Product.belongsTo(MetaField, { foreignKey: 'productId' });
+
 module.exports = MetaField;

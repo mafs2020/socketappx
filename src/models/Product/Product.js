@@ -1,7 +1,7 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, UUID } = require("sequelize");
 const sequelize = require("../../utils/connection");
-const Metafield = require('./MetaField')
-const VariantProduct = require('./VariantProduct');
+// const Metafield = require('./MetaField')
+// const VariantProduct = require('./VariantProduct');
 const Category = require("./Category");
 const Company = require("../User/Company")
 
@@ -33,22 +33,22 @@ const Product = sequelize.define("product",{
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    categoryId: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      references: {
-        model: Category,
-        key: 'id'
-      }
-    },
-    companyId: {
-      type: DataTypes.UUID,
-      allowNull: true,
-      references: {
-        model: Company,
-        key: 'id'
-      }
-    },
+    // categoryId: {
+    //   type: DataTypes.UUID,
+    //   allowNull: false,
+    //   references: {
+    //     model: Category,
+    //     key: 'id'
+    //   }
+    // },
+    // companyId: {
+    //   type: DataTypes.UUID,
+    //   allowNull: true,
+    //   references: {
+    //     model: Company,
+    //     key: 'id'
+    //   }
+    // },
     //MetaField ---> unitOfMeasurement
     //PricesId
     //Stock
@@ -62,12 +62,20 @@ const Product = sequelize.define("product",{
   }
 );
 
-//Metafield
-Product.hasMany(Metafield, { foreignKey: 'productId' })
-Product.belongsTo(Metafield, { foreignKey: 'productId' });
+// //Metafield
+// Product.hasMany(Metafield, { foreignKey: 'productId' })
+// Product.belongsTo(Metafield, { foreignKey: 'productId' });
 
 //Variant
-Product.hasMany(VariantProduct, { foreignKey: 'productId' })
-Product.belongsTo(VariantProduct, { foreignKey: 'productId' });
+// Product.hasMany(VariantProduct, { foreignKey: 'productId' })
+// Product.belongsTo(VariantProduct, { foreignKey: 'productId' });
+
+//Producto
+Category.hasMany(Product)
+Product.belongsTo(Category, { foreignKey: 'categoryId' });
+
+//Company
+Company.hasMany(Product)
+Product.belongsTo(Company, { foreignKey: 'companyId' });
 
 module.exports = Product;
