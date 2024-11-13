@@ -9,7 +9,7 @@ const {
     uploadToCloudinary,
     deleteFromCloudinary,
   } = require("../../utils/cloudinary");
-  const { Op } = require('sequelize');
+  const { Op, literal, col } = require('sequelize');
 
 const getAll = catchError(async(req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -67,17 +67,29 @@ const getAllProductsCompany = catchError(async(req, res) => {
     const results = await Product.findAndCountAll({
         limit: pageSize,
         offset: offset,
+        include: [{ 
+            model: VariantProduct,
+            as: 'variants',
+            required: false,
+            // where: {
+            //     [Op.or]: [
+            //         { companyId: companyId }
+            //     ]
+            // }
+            // where: {
+            //     companyId: companyId
+            // }
+        }],
         where: {
             [Op.or]: [
-                { companyId: companyId }
+                { companyId: companyId },
+                { '$variants.companyId$': companyId } 
+                // { '$VariantProduct.companyId$': companyId },
+                // literal(`"variantProduct"."companyId" = '${companyId}'`),
+                // { [col('variants.companyId')]: companyId },
             ]
         },
-        include: [{ 
-                model: VariantProduct,
-                as: 'variants',
-                required: false,
-                where: { companyId: companyId }
-        }]
+        subQuery: false,
     });
     const response = {
     totalRecords: results.count,
@@ -104,7 +116,7 @@ const create = catchError(async(req, res) => {
         urls.push(secure_url);
     }
     // console.log('urls', urls)
-    const Products = await Product.create({ ...JSON.parse(product), imageURL: urls[0], companyId: JSON.parse(companyId)});
+    const Products = await Product.create({ ...JSON.parse(product), imageURL: urls[0], companyId: JSON.parse(companyId) });
     return res.status(200).json({Products});
   } catch (error) {
     return res.status(404).json({message: "Error al crear el producto", error });

@@ -10,9 +10,9 @@ variantProductRouter.route('/variantProduct')
     .post(upload.array("files", 1),create);
 
 variantProductRouter.route('/variantProduct/:id')
-.get(getOne)
-.delete(remove)
-.put(update);
+    .get(getOne)
+    .delete(remove)
+    .put(update);
 
 variantProductRouter.route('/variantProduct/updateFile/:id').put(upload.array("files", 1),updateFile)
 variantProductRouter.route('/variantProduct/product').post(getAllProduct)

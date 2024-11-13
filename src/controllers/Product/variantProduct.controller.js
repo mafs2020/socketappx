@@ -160,7 +160,9 @@ const update = catchError(async(req, res) => {
 
 const updateFile = catchError(async(req, res) => {
     const { id } = req.params;
+    console.log("id: ", id)
     const {variantProduct, stock, price, stockId, priceId} = req.body;
+    console.log("datos:", JSON.parse(variantProduct), JSON.parse(price), JSON.parse(stock), JSON.parse(priceId), JSON.parse(stockId))
     const transaction = await sequelize.transaction();
     try{
       const files = req.files;
@@ -173,20 +175,20 @@ const updateFile = catchError(async(req, res) => {
       console.log('urls', urls)
       
       const variamnt = await VariantProduct.update(
-            {...JSON.parse(variantProduct)},
+            {...JSON.parse(variantProduct), imageURL: urls[0]},
             { where: {id}, returning: true },
             {transaction}
         );
 
         const stocks = await Stock.update(
             {...JSON.parse(stock)},
-            { where: {id: stockId}, returning: true },
+            { where: {id: JSON.parse(stockId)}, returning: true },
             {transaction}
         );
 
         const prices = await Price.update(
             {...JSON.parse(price)},
-            { where: {id: priceId}, returning: true },
+            { where: {id: JSON.parse(priceId)}, returning: true },
             {transaction}
         );
 
