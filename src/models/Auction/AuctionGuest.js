@@ -31,8 +31,8 @@ const AuctionGuest = sequelize.define("auctionGuest",{
 );
 
 //
-Auction.hasMany(AuctionGuest, { foreignKey: 'auctionId' })
-Auction.belongsTo(AuctionGuest, { foreignKey: 'auctionId' });
+Auction.hasMany(AuctionGuest)
+AuctionGuest.belongsTo(Auction, { foreignKey: 'auctionId' });
 // Auction.hasMany(AuctionGuest, { foreignKey: 'auctionId' });
 // Auction.belongsTo(AuctionGuest, { foreignKey: 'auctionId' });
 
@@ -43,8 +43,8 @@ User.belongsTo(AuctionGuest, { foreignKey: 'userId' });
 // User.belongsTo(AuctionGuest, { foreignKey: 'userId' });
 
 //
-AuctionGuest.hasMany(GuestBid, { foreignKey: 'auctionGuestId' })
-AuctionGuest.belongsTo(GuestBid, { foreignKey: 'auctionGuestId' });
+AuctionGuest.hasMany(GuestBid)
+GuestBid.belongsTo(AuctionGuest, { foreignKey: 'auctionGuestId' });
 // AuctionGuest.hasMany(GuestBid, { foreignKey: 'guestId' });
 // AuctionGuest.belongsTo(GuestBid, { foreignKey: 'guestId' });
 

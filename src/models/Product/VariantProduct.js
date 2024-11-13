@@ -4,6 +4,7 @@ const Price = require("./Price");
 const Stock = require("./Stock");
 const Product = require("./Product");
 const Company = require("../User/Company");
+const Auction = require("../Auction/Auction");
 
 const VariantProduct = sequelize.define("variantProduct",{
     id: {
@@ -61,5 +62,9 @@ VariantProduct.belongsTo(Company, { foreignKey: 'companyId' });
 //Stock
 VariantProduct.hasMany(Stock, { foreignKey: 'variantProductId' });
 Stock.belongsTo(VariantProduct, { foreignKey: 'variantProductId' });
+
+//Aucion
+VariantProduct.hasMany(Auction);
+// Auction.belongsTo(VariantProduct, { foreignKey: 'variantProductId' });
 
 module.exports = VariantProduct;
