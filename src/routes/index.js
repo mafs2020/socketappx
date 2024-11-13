@@ -14,6 +14,7 @@ const documentRouter = require("./User/document.router");
 const userActionRouter = require("./UserAction/UserAction.router");
 const locationIQRouter = require("./locationIQ.routes")
 const categoryRouter = require("./Product/category.router")
+const variantProductRouter = require("./Product/variantProduct.router")
 
 // colocar las rutas aquí
 
@@ -38,6 +39,7 @@ router.use(guestBidRouter);
 //Product
 router.use(productRouter);
 router.use(categoryRouter)
+router.use(variantProductRouter)
 
 //Get Token
 router.use(locationIQRouter)

@@ -1,4 +1,4 @@
-const { getAll, create, getOne, remove, update, getAllProducts, getAllProductsCompany,
+const { getAll, create, getOne, remove, update, getAllProducts, getAllProductsCompany, updateFile,
 } = require('../../controllers/Product/product.controller');
 const express = require('express');
 const upload = require("../../utils/multer");
@@ -15,5 +15,6 @@ ProductRouter.route('/product/:id')
     .put(update);
 
 ProductRouter.route('/product/company').post(getAllProductsCompany)
+ProductRouter.route('/product/updateFile/:id').put(upload.array("files", 1),updateFile)
 
 module.exports = ProductRouter;

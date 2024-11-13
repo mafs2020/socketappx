@@ -93,7 +93,7 @@ const getAllProductsCompany = catchError(async(req, res) => {
 });
 
 const create = catchError(async(req, res) => {
-    const { product } = req.body;
+    const { product, companyId } = req.body;
   console.log("product", product)
   try{
     const files = req.files;
@@ -104,7 +104,7 @@ const create = catchError(async(req, res) => {
         urls.push(secure_url);
     }
     // console.log('urls', urls)
-    const Products = await Product.create({ ...JSON.parse(product), imageURL: urls[0] });
+    const Products = await Product.create({ ...JSON.parse(product), imageURL: urls[0], companyId: JSON.parse(companyId)});
     return res.status(200).json({Products});
   } catch (error) {
     return res.status(404).json({message: "Error al crear el producto", error });
@@ -129,13 +129,38 @@ const remove = catchError(async(req, res) => {
 const update = catchError(async(req, res) => {
     const { id } = req.params;
     const { product } = req.body;
-    const result = await Product.update(
-        ...product,
-        { where: {id}, returning: true }
-    );
-    if(result[0] === 0) return res.sendStatus(404);
-    return res.json(result[1][0]);
+    try {
+        const prod = await Product.update(
+        { ...product },
+        { where: { id }, returning: true }
+        );
+        return res.json(prod);
+    } catch (error) {
+        return res.status(404).json({message: "Error al actualizar la categoría", error });
+    }
 });
+
+const updateFile = catchError(async(req, res) => {
+    const { id } = req.params;
+    const { product } = req.body;
+    try{
+      const files = req.files;
+      // console.log('files', files)
+      const urls = [];
+      for (const file of files) {
+          const { secure_url } = await uploadToCloudinary(file);//secure_url
+          urls.push(secure_url);
+      }
+      console.log('urls', urls)
+      const categrory = await Product.update(
+        { ...JSON.parse(product), imageURL: urls[0] },
+        { where: { id }, returning: true }
+        );
+      return res.status(200).json({categrory});
+    } catch (error) {
+      return res.status(404).json({message: "Error al actualizar el producto", error });
+    }
+  });
 
 module.exports = {
     getAll,
@@ -145,4 +170,5 @@ module.exports = {
     update,
     getAllProducts,
     getAllProductsCompany,
+    updateFile,
 }

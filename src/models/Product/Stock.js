@@ -23,6 +23,11 @@ const Stock = sequelize.define("stock",{
       allowNull: true,
       comment: "Disponibilidad",
     },
+    unitMeasurement: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      comment: "Unidad de medida a usar",
+    },
   },
   {
     tableName: "stock",
