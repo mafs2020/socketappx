@@ -60,6 +60,12 @@ const Auction = sequelize.define("auction",{
         allowNull: false,
         comment: "Fecha de fin de la subasta real",
     },
+    openAuction: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        comment: "Verificar si la subasta es abierta o cerrada",
+        defaultValue: true,
+    },
     addressId: {
         type: DataTypes.UUID,
         allowNull: true,

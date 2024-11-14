@@ -15,6 +15,7 @@ const userActionRouter = require("./UserAction/UserAction.router");
 const locationIQRouter = require("./locationIQ.routes")
 const categoryRouter = require("./Product/category.router")
 const variantProductRouter = require("./Product/variantProduct.router")
+const auctionInvitationRouter = require("./Auction/auctionInvitaion.router")
 
 // colocar las rutas aquí
 
@@ -35,6 +36,7 @@ router.use(documentRouter);
 router.use(auctionRouter);
 router.use(auctionGuest);
 router.use(guestBidRouter);
+router.use(auctionInvitationRouter);
 
 //Product
 router.use(productRouter);
