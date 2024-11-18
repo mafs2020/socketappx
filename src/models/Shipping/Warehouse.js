@@ -1,9 +1,7 @@
 const { DataTypes, UUID } = require("sequelize");
 const sequelize = require("../../utils/connection");
 
-const Warehouse = sequelize.define(
-  "warehouse",
-  {
+const Warehouse = sequelize.define("warehouse",{
     id: {
       type: DataTypes.UUID,
       primaryKey: true,

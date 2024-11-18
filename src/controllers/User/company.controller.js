@@ -228,6 +228,28 @@ const updateCompanyData = catchError(async(req, res) => {
     return res.json({Address: result[1][0]});
 });
 
+const updateCompanyDataFile = catchError(async(req, res) => {
+    const { company, id } = req.body;
+    console.log("datos:", JSON.parse(company), JSON.parse(id))
+    try{
+        //Guardar las imagenes
+        const files = req.files;
+        const urls = [];
+        for (const file of files) {
+            const { secure_url } = await uploadToCloudinary(file);//secure_url
+            urls.push(secure_url);
+        }
+        console.log('urls', urls)
+
+        const companys = await Company.update(
+            {...JSON.parse(company), urlImg: urls[0]},
+            {where: { id: JSON.parse(id)}});
+        return res.status(200).json({ company: companys });
+    } catch (error) {
+        return res.status(400).json({ message: "Error al actualizar los datos de la compañia", error });
+    }
+});
+
 module.exports = {
     getAll,
     create,
@@ -239,4 +261,5 @@ module.exports = {
     getOneWithAddress,
     updateStatus,
     updateCompanyData,
+    updateCompanyDataFile,
 }

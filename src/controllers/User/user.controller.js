@@ -7,6 +7,10 @@ const Rol = require('../../models/User/Rol');
 const AddressType = require('../../models/Address/AddressType');
 const sequelize = require("../../utils/connection");
 const Company = require('../../models/User/Company');
+const {
+    uploadToCloudinary,
+    deleteFromCloudinary,
+  } = require("../../utils/cloudinary");
 
 const getAll = catchError(async(req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -62,7 +66,8 @@ const create = catchError(async(req, res) => {
         urlImg,
         dateOfBirth,
         position,
-        userName });
+        userName,
+        mainAddress: true });
     // await sendEmail({
     //     to: lowerCaseEmail,
     //     subject: "Cuenta de para el sistema de subastas creada con éxito 🥳",
@@ -396,6 +401,29 @@ const updateUserData = catchError(async(req, res) => {
     return res.json({Address: result[1][0]});
 });
 
+const updateUserDataFile = catchError(async(req, res) => {
+    const { user, id } = req.body;
+    // console.log("datos:", JSON.parse(user), JSON.parse(id))
+    try{
+        //Guardar las imagenes
+        const files = req.files;
+        const urls = [];
+        for (const file of files) {
+            const { secure_url } = await uploadToCloudinary(file);//secure_url
+            urls.push(secure_url);
+        }
+        console.log('urls', urls)
+
+        const users = await User.update(
+            {...JSON.parse(user), urlImg: urls[0]},
+            {where: { id: JSON.parse(id)}});
+        return res.status(200).json({ user: users });
+    } catch (error) {
+        // console.error('Error al crear los registros:', error);
+        return res.status(400).json({ message: "Error al guardar los datos", error });
+    }
+});
+
 module.exports = {
     getAll,
     create,
@@ -411,4 +439,5 @@ module.exports = {
     deleteUser,
     cambiarStatusUser,
     updateUserData,
+    updateUserDataFile,
 }
