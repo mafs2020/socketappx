@@ -1,4 +1,4 @@
-const { getAll, create, getOne, remove, update, getAllWinner 
+const { getAll, create, getOne, remove, update, getAllWinner, getAuctionAddress, 
 } = require('../../controllers/Auction/auction.controller');
 const express = require('express');
 
@@ -14,5 +14,7 @@ auctionRouter.route('/auction/:id')
     .put(update);
 
 auctionRouter.route('/auction/allWinner').get(getAllWinner)
+
+auctionRouter.route('/auction/address/:id').get(getAuctionAddress)
 
 module.exports = auctionRouter;

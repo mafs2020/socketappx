@@ -1,6 +1,5 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/connection");
-const Price = require("./Price");
 const Stock = require("./Stock");
 const Product = require("./Product");
 const Company = require("../User/Company");
@@ -53,7 +52,7 @@ const VariantProduct = sequelize.define("variantProduct",{
 
 //Product
 Product.hasMany(VariantProduct, {as: 'variants'})
-// Product.belongsTo(VariantProduct);
+VariantProduct.belongsTo(Product);
 
 //Company
 Company.hasMany(VariantProduct)
@@ -65,6 +64,6 @@ Stock.belongsTo(VariantProduct, { foreignKey: 'variantProductId' });
 
 //Aucion
 VariantProduct.hasMany(Auction);
-// Auction.belongsTo(VariantProduct, { foreignKey: 'variantProductId' });
+Auction.belongsTo(VariantProduct, { foreignKey: 'variantProductId' });
 
 module.exports = VariantProduct;

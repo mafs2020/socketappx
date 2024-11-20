@@ -2,6 +2,12 @@ const catchError = require("../../utils/catchError");
 const Auction = require("../../models/Auction/Auction");
 const AuctionGuest = require("../../models/Auction/AuctionGuest");
 const GuestBid = require("../../models/Auction/GuestBid");
+const Address = require("../../models/Address/Address");
+const Company = require("../../models/User/Company");
+const VariantProduct = require("../../models/Product/VariantProduct");
+const Price = require("../../models/Product/Price");
+const Stock = require("../../models/Product/Stock");
+const Product = require("../../models/Product/Product");
 
 const getAll = catchError(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -77,6 +83,26 @@ const update = catchError(async (req, res) => {
   return res.json(result[1][0]);
 });
 
+const getAuctionAddress = catchError(async (req, res) => {
+  const { id } = req.params;
+  console.log("id", id)
+  const result = await Auction.findAll({
+    where: {id},
+    include: [
+      { model: Address }, 
+      { model: Company },
+      { model: VariantProduct, 
+        include:[
+          { model: Price }, 
+          { model: Stock },
+          { model: Product },
+      ] },
+    ],
+  });
+  if (!result) return res.sendStatus(404);
+  return res.json(result);
+});
+
 module.exports = {
   getAll,
   create,
@@ -84,4 +110,5 @@ module.exports = {
   remove,
   update,
   getAllWinner,
+  getAuctionAddress,
 };

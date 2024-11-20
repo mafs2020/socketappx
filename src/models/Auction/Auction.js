@@ -1,6 +1,7 @@
 const { DataTypes, UUID } = require("sequelize");
 const sequelize = require("../../utils/connection");
 const Address = require("../Address/Address");
+const Company = require("../User/Company");
 
 const Auction = sequelize.define("auction",{
     id: {
@@ -66,14 +67,6 @@ const Auction = sequelize.define("auction",{
         comment: "Verificar si la subasta es abierta o cerrada",
         defaultValue: true,
     },
-    addressId: {
-        type: DataTypes.UUID,
-        allowNull: true,
-        references: {
-          model: Address,
-          key: 'id'
-        }
-    },
     //auctionGuest
   },
   {
@@ -87,6 +80,9 @@ const Auction = sequelize.define("auction",{
 
 //Address
 // Auction.hasOne(Address, { foreignKey: 'addressId' })
-// Address.belongsTo(Auction, { foreignKey: 'addressId' });
+Auction.belongsTo(Address, { foreignKey: 'addressId' });
+
+//Company
+Auction.belongsTo(Company, { foreignKey: 'companyId' })
 
 module.exports = Auction;

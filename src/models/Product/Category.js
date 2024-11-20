@@ -1,6 +1,5 @@
 const { DataTypes, UUID } = require("sequelize");
 const sequelize = require("../../utils/connection");
-const Product = require('./Product')
 
 const Category = sequelize.define("category",{
     id: {
