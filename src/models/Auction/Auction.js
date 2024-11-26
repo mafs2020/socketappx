@@ -53,12 +53,12 @@ const Auction = sequelize.define("auction",{
     },
     startDateReal: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
         comment: "Fecha de inicio de la subasta real",
     },
     endDateReal: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
         comment: "Fecha de fin de la subasta real",
     },
     openAuction: {
