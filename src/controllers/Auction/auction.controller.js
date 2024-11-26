@@ -13,6 +13,7 @@ const {
   deleteFromCloudinary,
 } = require("../../utils/cloudinary");
 const sequelize = require("../../utils/connection");
+const User = require("../../models/User/User");
 
 const getAll = catchError(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -65,7 +66,15 @@ const create = catchError(async (req, res) => {
 const getOne = catchError(async (req, res) => {
   const { id } = req.params;
   const result = await Auction.findByPk(id, {
-    include: [{ model: AuctionGuest }],
+    include: [
+      { model: Address },
+      { model: VariantProduct },
+      { model: AuctionGuest, 
+        include: [
+          { model: User },
+          { model: GuestBid }, 
+        ] }
+    ],
   });
   if (!result) return res.sendStatus(404);
   return res.json(result);

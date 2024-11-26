@@ -84,14 +84,14 @@ const User = sequelize.define(
 
 //Address
 User.hasMany(Address)
-User.belongsTo(Address, { foreignKey: 'userId' });
+User.belongsTo(Address, { foreignKey: 'addressId' });
 // Address.hasOne(User)
 // User.hasMany(Address, { foreignKey: 'userId' });
 // User.belongsTo(Address, { foreignKey: 'userId' });
 
 //Sumary
 User.hasMany(Summary)
-User.belongsTo(Summary, { foreignKey: 'userId' });
+Summary.belongsTo(User, { foreignKey: 'userId' });
 // Summary.hasOne(User)
 // User.hasMany(Summary, { foreignKey: 'userId' });
 // User.belongsTo(Summary, { foreignKey: 'userId' });
