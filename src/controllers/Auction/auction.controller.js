@@ -59,8 +59,7 @@ const create = catchError(async (req, res) => {
 
 const getOne = catchError(async (req, res) => {
   const { id } = req.params;
-  const result = await Auction.findByPk({
-    id,
+  const result = await Auction.findByPk(id, {
     include: [{ model: AuctionGuest }],
   });
   if (!result) return res.sendStatus(404);
@@ -85,18 +84,16 @@ const update = catchError(async (req, res) => {
 
 const getAuctionAddress = catchError(async (req, res) => {
   const { id } = req.params;
-  console.log("id", id)
+  console.log("id", id);
   const result = await Auction.findAll({
-    where: {id},
+    where: { id },
     include: [
-      { model: Address }, 
+      { model: Address },
       { model: Company },
-      { model: VariantProduct, 
-        include:[
-          { model: Price }, 
-          { model: Stock },
-          { model: Product },
-      ] },
+      {
+        model: VariantProduct,
+        include: [{ model: Price }, { model: Stock }, { model: Product }],
+      },
     ],
   });
   if (!result) return res.sendStatus(404);
