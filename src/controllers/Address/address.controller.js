@@ -235,6 +235,28 @@ const createAddressAuction = catchError(async (req, res) => {
   }
 });
 
+const createAddressAuction2 = catchError(async (req, res) => {
+  const { address, auction, variantProductId, companyId } = req.body;
+  const t = await sequelize.transaction();
+
+  try {
+    const addressModel = await Address.create({...address, mainAddress: true}, { transaction: t });
+    const auctionModel = await Auction.create({
+        ...auction,
+        addressId: addressModel.id,
+        variantProductId,
+        companyId,
+      }, { transaction: t }
+    );
+    await t.commit();
+    return res.json({ addressModel, auctionModel });
+  } catch (error) {
+    await t.rollback();
+    console.log("error :>> ", error);
+    return res.status(400).json(error);
+  }
+});
+
 module.exports = {
   getAll,
   create,
@@ -248,4 +270,5 @@ module.exports = {
   getAllByCompanyID,
   createCompanyId,
   createAddressAuction,
+  createAddressAuction2
 };

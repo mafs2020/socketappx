@@ -174,6 +174,19 @@ const updateFile = catchError(async(req, res) => {
     }
   });
 
+  const getAllProductsByCategory = catchError(async(req, res) => {
+    const { categoryId } = req.body;
+    const results = await Product.findAll({
+        where: {
+            categoryId
+        }
+    });
+    if(!results) {
+        return res.status(404).json({message: "Error al consultar los producto", results });
+    }
+    return res.json(results)
+});
+
 module.exports = {
     getAll,
     create,
@@ -183,4 +196,5 @@ module.exports = {
     getAllProducts,
     getAllProductsCompany,
     updateFile,
+    getAllProductsByCategory,
 }

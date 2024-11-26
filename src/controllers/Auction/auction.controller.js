@@ -8,6 +8,11 @@ const VariantProduct = require("../../models/Product/VariantProduct");
 const Price = require("../../models/Product/Price");
 const Stock = require("../../models/Product/Stock");
 const Product = require("../../models/Product/Product");
+const {
+  uploadToCloudinary,
+  deleteFromCloudinary,
+} = require("../../utils/cloudinary");
+const sequelize = require("../../utils/connection");
 
 const getAll = catchError(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -103,6 +108,52 @@ const getAuctionAddress = catchError(async (req, res) => {
   return res.json(result);
 });
 
+const createAuctionVariantFile = catchError(async(req, res) => {
+  const { auction, address, variantProduct, price, stock, productId, companyId } = req.body;
+  const transaction = await sequelize.transaction();
+  console.log("datos:", JSON.parse(auction), JSON.parse(address), JSON.parse(variantProduct), JSON.parse(price), JSON.parse(stock), JSON.parse(productId), JSON.parse(companyId))
+  try{
+    const files = req.files;
+    // console.log('files', files)
+    const urls = [];
+    for (const file of files) {
+        const { secure_url } = await uploadToCloudinary(file);//secure_url
+        urls.push(secure_url);
+    }
+    console.log('urls', urls)
+
+    const addressss = await Address.create({ ...JSON.parse(address), mainAddress: true}, {transaction});
+
+    const variantProductt = await VariantProduct.create({ 
+      ...JSON.parse(variantProduct), imageURL: urls[0], isActive: true, productId: JSON.parse(productId), companyId: JSON.parse(companyId)}, 
+      {transaction});
+
+    const stockss = await Stock.create({ 
+      ...JSON.parse(stock), variantProductId: variantProductt.id, companyId: ''}, 
+      {transaction});
+
+    const pricesss = await Price.create({ 
+      ...JSON.parse(price), variantProductId: variantProductt.id}, 
+      {transaction});
+
+    const auctionsss = await Auction.create({ 
+      ...JSON.parse(auction), variantProductId: variantProductt.id, addressId: addressss.id, companyId: JSON.parse(companyId)},
+       {transaction});
+
+    await transaction.commit();
+    return res.status(200).json({
+      address: addressss,
+      variantProduct: variantProductt,
+      stopck: stockss,
+      price: pricesss,
+      auction: auctionsss,
+    });
+  } catch (error) {
+    await transaction.rollback();
+    return res.status(404).json({message: "Error al guardar los datos de la apuesta", error });
+  }
+});
+
 module.exports = {
   getAll,
   create,
@@ -111,4 +162,5 @@ module.exports = {
   update,
   getAllWinner,
   getAuctionAddress,
+  createAuctionVariantFile,
 };

@@ -7,6 +7,8 @@ const {
     uploadToCloudinary,
     deleteFromCloudinary,
   } = require("../../utils/cloudinary");
+const Product = require('../../models/Product/Product');
+const { Op } = require('sequelize');
 
   const getAll = catchError(async(req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -204,6 +206,36 @@ const updateFile = catchError(async(req, res) => {
     }
   });
 
+  const getAllSearch = catchError(async(req, res) => {
+    const { query, companyId } = req.body;
+    const result = await VariantProduct.findAll({
+        include: [
+            { model: Product },
+            { model: Stock },
+            { model: Price },
+        ],
+        where: {
+            [Op.and]: [
+                {
+                    [Op.or]: [
+                        { description: { [Op.iLike]: `%${query}%`}  },
+                        { '$product.name$': { [Op.iLike]: `%${query}%`}  }
+                    ]
+                },
+                {
+                    [Op.or]: [
+                        { companyId:  companyId },
+                        // { '$product.companyId$':  companyId }
+                    ]
+                }
+            ]
+        },
+        subQuery: false,
+    });
+    if(!result) return res.sendStatus(404);
+    return res.json(result);
+});
+
 module.exports = {
     getAll,
     create,
@@ -212,4 +244,5 @@ module.exports = {
     update,
     updateFile,
     getAllProduct,
+    getAllSearch, 
 }

@@ -11,6 +11,7 @@ const {
   getAllByCompanyID,
   createCompanyId,
   createAddressAuction,
+  createAddressAuction2,
 } = require("../../controllers/Address/address.controller");
 const express = require("express");
 
@@ -30,5 +31,6 @@ addressRouter
   .put(updateMainAddressCompany);
 addressRouter.route("/address/companyId").post(getAllByCompanyID);
 addressRouter.route("/address/create/companyid").post(createCompanyId);
+addressRouter.route("/addressauction1").post(createAddressAuction2);
 
 module.exports = addressRouter;
