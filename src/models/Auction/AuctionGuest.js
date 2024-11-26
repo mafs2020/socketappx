@@ -37,8 +37,8 @@ AuctionGuest.belongsTo(Auction, { foreignKey: 'auctionId' });
 // Auction.belongsTo(AuctionGuest, { foreignKey: 'auctionId' });
 
 //Usuario
-User.hasMany(AuctionGuest, { foreignKey: 'userId' })
-User.belongsTo(AuctionGuest, { foreignKey: 'userId' });
+User.hasMany(AuctionGuest)
+AuctionGuest.belongsTo(User, { foreignKey: 'userId' });
 // User.hasMany(AuctionGuest, { foreignKey: 'userId' } )
 // User.belongsTo(AuctionGuest, { foreignKey: 'userId' });
 
