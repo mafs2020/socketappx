@@ -14,6 +14,8 @@ const {
 } = require("../../utils/cloudinary");
 const sequelize = require("../../utils/connection");
 const User = require("../../models/User/User");
+const { Op, literal, col } = require('sequelize');
+const Category = require("../../models/Product/Category");
 
 const getAll = catchError(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -204,6 +206,33 @@ const createAuctionVariantFile = catchError(async (req, res) => {
   }
 });
 
+const getAllSearch = catchError(async(req, res) => {
+  const { query, companyId } = req.body;
+  const result = await Auction.findAll({
+      include: [
+          { model: VariantProduct,
+            include: [
+              { model: Stock },
+              { model: Price },
+              { model: Product,
+                include: [
+                  { model: Category }
+                ]
+               }
+            ]
+           },
+      ],
+      where: {
+        companyId:  companyId, 
+        name: { [Op.iLike]: `%${query}%`},
+        openAuction: false, 
+      },
+      subQuery: false,
+  });
+  if(!result) return res.sendStatus(404);
+  return res.json(result);
+});
+
 module.exports = {
   getAll,
   create,
@@ -213,4 +242,5 @@ module.exports = {
   getAllWinner,
   getAuctionAddress,
   createAuctionVariantFile,
+  getAllSearch,
 };

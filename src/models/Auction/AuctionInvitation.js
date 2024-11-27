@@ -1,6 +1,7 @@
 const { DataTypes, UUID } = require("sequelize");
 const sequelize = require("../../utils/connection");
 const Auction = require("./Auction");
+const Company = require("../User/Company");
 
 const AuctionInvitation = sequelize.define("auctionInvitation",{
     id: {
@@ -35,7 +36,7 @@ Auction.hasOne(AuctionInvitation)
 AuctionInvitation.belongsTo(Auction, { foreignKey: 'auctionId' });
 
 //Company o User
-// Auction.hasOne(AuctionInvitation)
-// AuctionInvitation.belongsTo(Auction, { foreignKey: 'auctionId' });
+Company.hasOne(AuctionInvitation)
+AuctionInvitation.belongsTo(Company, { foreignKey: 'companyId' });
 
 module.exports = AuctionInvitation;

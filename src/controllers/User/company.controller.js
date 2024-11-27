@@ -10,6 +10,7 @@ const {
     uploadToCloudinary,
     deleteFromCloudinary,
   } = require("../../utils/cloudinary");
+const { Op, literal, col } = require('sequelize');
 
 const getAll = catchError(async(req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -250,6 +251,24 @@ const updateCompanyDataFile = catchError(async(req, res) => {
     }
 });
 
+const getAllSearch = catchError(async(req, res) => {
+    const { query, companyId } = req.body;
+    const result = await Company.findAll({
+        include: [
+            {model: User}
+        ],
+        where: {
+            name: { [Op.iLike]: `%${query}%`},
+            id: {
+                [Op.ne]: companyId, 
+            },
+        },
+        subQuery: false,
+    });
+    if(!result) return res.sendStatus(404);
+    return res.json(result);
+  });
+
 module.exports = {
     getAll,
     create,
@@ -262,4 +281,5 @@ module.exports = {
     updateStatus,
     updateCompanyData,
     updateCompanyDataFile,
+    getAllSearch,
 }
