@@ -71,9 +71,10 @@ const getAllCompany = catchError(async(req, res) => {
              },
         ],
         where: {
-            companyId: {
-                [Op.ne]: companyId, 
-            },
+            // companyId: {
+            //     [Op.ne]: companyId, 
+            // },
+            companyId
             // status: 'Enviada',
         },
     });
