@@ -21,6 +21,11 @@ const AuctionInvitation = sequelize.define("auctionInvitation",{
         allowNull: false,
         comment: "Estatus de la invitacion: Enviada, Aceptada o Denegada",
     },
+    responseDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      comment: "Fecha de la respuesta a la invitación",
+    },
   },
   {
     tableName: "auctionInvitation",

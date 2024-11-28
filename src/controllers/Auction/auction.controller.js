@@ -200,9 +200,7 @@ const createAuctionVariantFile = catchError(async (req, res) => {
     });
   } catch (error) {
     await transaction.rollback();
-    return res
-      .status(404)
-      .json({ message: "Error al guardar los datos de la apuesta", error });
+    return res.status(404).json({ message: "Error al guardar los datos de la apuesta", error });
   }
 });
 

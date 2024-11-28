@@ -8,6 +8,9 @@ const Stock = require('../../models/Product/Stock');
 const Product = require('../../models/Product/Product');
 const Category = require('../../models/Product/Category');
 const { Op, literal, col } = require('sequelize');
+const sequelize = require("../../utils/connection");
+const AuctionGuest = require('../../models/Auction/AuctionGuest');
+const User = require('../../models/User/User');
 
 const getAll = catchError(async(req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -40,8 +43,19 @@ const getAllCompany = catchError(async(req, res) => {
         offset: offset,
         include: [
             { model: Auction,
+                where: {
+                    startDate: {
+                        [Op.gte]: new Date(),
+                    }
+                },
                 include: [
-                    { model: Company },
+                    { model: Company,
+                        include: [
+                            { model: User,
+                                where: {isAdmin: true}
+                             }
+                        ]
+                     },
                     { model: VariantProduct, 
                         include: [
                             { model: Price },
@@ -60,6 +74,7 @@ const getAllCompany = catchError(async(req, res) => {
             companyId: {
                 [Op.ne]: companyId, 
             },
+            // status: 'Enviada',
         },
     });
     const response = {
@@ -124,6 +139,55 @@ const update = catchError(async(req, res) => {
     return res.json(result[1][0]);
 });
 
+const responseInvitation = catchError(async(req, res) => {
+    const { id } = req.params;
+    const { respuesta, responseDate, auctionId, userId } = req.body;
+    const transaction = await sequelize.transaction();
+    try {
+        var cont = ''; 
+        const gues = await AuctionGuest.findAndCountAll({ where: { auctionId, userId } })
+        if (respuesta) {
+            cont = 'Aceptada';
+            if (gues.count == 0) {
+                await AuctionGuest.create(
+                    { auctionId, userId, type: ' ' },
+                    { transaction }
+                );
+            }
+        } else { 
+            cont = 'Denegada';
+            if (gues.count > 0) {
+                await AuctionGuest.destroy(
+                    {
+                        where: {auctionId, userId},
+                        transaction
+                    }
+                );
+            }
+        }
+        const result = await AuctionInvitation.update(
+            { 
+                status: cont,
+                responseDate
+             }, 
+            { 
+                where: { id },
+                transaction
+             }
+        );
+        await transaction.commit();
+        return  res.status(200).json({invitation: result});
+
+    } catch (error){
+        if (!transaction.finished) {
+        await transaction.rollback();
+        }
+        console.error("Error durante la transacción:", error);
+        return res.status(404).json({ message: "Error al mandar la respuesta a la invitación de la subasta", error });
+    }
+    
+});
+
 module.exports = {
     getAll,
     create,
@@ -131,4 +195,5 @@ module.exports = {
     remove,
     update,
     getAllCompany,
+    responseInvitation,
 }
