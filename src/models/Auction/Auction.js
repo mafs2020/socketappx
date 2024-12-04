@@ -39,7 +39,7 @@ const Auction = sequelize.define("auction",{
     status: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: "Estatus de la subasta (Pendiente, Activo, Concluida)",
+        comment: "Estatus de la subasta (Pendiente, Activo, Concluida, Cancelada)",
     },
     prorogation: {
         type: DataTypes.STRING,
