@@ -14,7 +14,7 @@ const {
 } = require("../../utils/cloudinary");
 const sequelize = require("../../utils/connection");
 const User = require("../../models/User/User");
-const { Op, literal, col } = require('sequelize');
+const { Op, literal, col } = require("sequelize");
 const Category = require("../../models/Product/Category");
 
 const getAll = catchError(async (req, res) => {
@@ -25,6 +25,27 @@ const getAll = catchError(async (req, res) => {
     limit: pageSize,
     offset: offset,
     include: [{ model: AuctionGuest }],
+  });
+  const response = {
+    totalRecords: results.count,
+    totalPages: Math.ceil(results.count / pageSize),
+    currentPage: page,
+    pageSize: pageSize,
+    data: results.rows,
+  };
+  return res.json(response);
+});
+
+const getAllkkk = catchError(async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 20;
+  const { status = "Activo" } = req.body;
+  const offset = (page - 1) * pageSize;
+  const results = await Auction.findAndCountAll({
+    limit: pageSize,
+    offset: offset,
+    include: [{ model: AuctionGuest }],
+    where: [{ status }],
   });
   const response = {
     totalRecords: results.count,
@@ -71,11 +92,7 @@ const getOne = catchError(async (req, res) => {
     include: [
       { model: Address },
       { model: VariantProduct },
-      { model: AuctionGuest, 
-        include: [
-          { model: User },
-          { model: GuestBid }, 
-        ] }
+      { model: AuctionGuest, include: [{ model: User }, { model: GuestBid }] },
     ],
   });
   if (!result) return res.sendStatus(404);
@@ -200,34 +217,33 @@ const createAuctionVariantFile = catchError(async (req, res) => {
     });
   } catch (error) {
     await transaction.rollback();
-    return res.status(404).json({ message: "Error al guardar los datos de la apuesta", error });
+    return res
+      .status(404)
+      .json({ message: "Error al guardar los datos de la apuesta", error });
   }
 });
 
-const getAllSearch = catchError(async(req, res) => {
+const getAllSearch = catchError(async (req, res) => {
   const { query, companyId } = req.body;
   const result = await Auction.findAll({
-      include: [
-          { model: VariantProduct,
-            include: [
-              { model: Stock },
-              { model: Price },
-              { model: Product,
-                include: [
-                  { model: Category }
-                ]
-               }
-            ]
-           },
-      ],
-      where: {
-        companyId:  companyId, 
-        name: { [Op.iLike]: `%${query}%`},
-        openAuction: false, 
+    include: [
+      {
+        model: VariantProduct,
+        include: [
+          { model: Stock },
+          { model: Price },
+          { model: Product, include: [{ model: Category }] },
+        ],
       },
-      subQuery: false,
+    ],
+    where: {
+      companyId: companyId,
+      name: { [Op.iLike]: `%${query}%` },
+      openAuction: false,
+    },
+    subQuery: false,
   });
-  if(!result) return res.sendStatus(404);
+  if (!result) return res.sendStatus(404);
   return res.json(result);
 });
 
@@ -241,4 +257,5 @@ module.exports = {
   getAuctionAddress,
   createAuctionVariantFile,
   getAllSearch,
+  getAllkkk,
 };

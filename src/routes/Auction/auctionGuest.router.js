@@ -11,7 +11,7 @@ const express = require("express");
 const auctionGuestRouter = express.Router();
 
 auctionGuestRouter.route("/auctionguest").get(getAll).post(create);
-auctionGuestRouter.route("/auctionguest/add").get(addGuest);
+auctionGuestRouter.route("/auctionguest/add").post(addGuest);
 
 auctionGuestRouter
   .route("/auctionguest/:id")
