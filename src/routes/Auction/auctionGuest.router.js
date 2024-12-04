@@ -1,10 +1,5 @@
 const {
-  getAll,
-  create,
-  getOne,
-  remove,
-  update,
-  addGuest,
+  getAll, create, getOne, remove, update, addGuest, getAllParticipating, getAllParticipatingSearch
 } = require("../../controllers/Auction/auctionGuest.controller");
 const express = require("express");
 
@@ -18,5 +13,8 @@ auctionGuestRouter
   .get(getOne)
   .delete(remove)
   .put(update);
+
+auctionGuestRouter.route('/auctionguest/participating').post(getAllParticipating)
+auctionGuestRouter.route('/auctionguest/participating/search').post(getAllParticipatingSearch)
 
 module.exports = auctionGuestRouter;

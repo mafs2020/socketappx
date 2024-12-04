@@ -38,15 +38,21 @@ const getAllCompany = catchError(async(req, res) => {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 20;
     const offset = (page - 1) * pageSize;
+    const send = new Date();
+    const year = send.getFullYear();
+    const mes = String(send.getMonth() + 1).padStart(2, '0');
+    const dia = String(send.getDate()).padStart(2, '0');
+    const startOfDay = `${year}-${mes}-${dia} 00:00:00`;
+    const endOfDay = `${year}-${mes}-${dia} 23:59:59`;
     const results = await AuctionInvitation.findAndCountAll({
         limit: pageSize,
         offset: offset,
         include: [
             { model: Auction,
                 where: {
-                    startDate: {
-                        [Op.gte]: new Date(),
-                    }
+                    openAuction: false,
+                    startDate: { [Op.lte]: startOfDay } ,
+                    endDate: { [Op.gte]: endOfDay },
                 },
                 include: [
                     { model: Company,
@@ -71,11 +77,7 @@ const getAllCompany = catchError(async(req, res) => {
              },
         ],
         where: {
-            // companyId: {
-            //     [Op.ne]: companyId, 
-            // },
             companyId
-            // status: 'Enviada',
         },
     });
     const response = {
@@ -142,8 +144,13 @@ const update = catchError(async(req, res) => {
 
 const responseInvitation = catchError(async(req, res) => {
     const { id } = req.params;
-    const { respuesta, responseDate, auctionId, userId } = req.body;
+    const { respuesta, auctionId, userId } = req.body;
     const transaction = await sequelize.transaction();
+    const send = new Date();
+    const year = send.getFullYear();
+    const mes = String(send.getMonth() + 1).padStart(2, '0');
+    const dia = String(send.getDate()).padStart(2, '0');
+    const responseDate = `${year}-${mes}-${dia} 00:00:00`;
     try {
         var cont = ''; 
         const gues = await AuctionGuest.findAndCountAll({ where: { auctionId, userId } })

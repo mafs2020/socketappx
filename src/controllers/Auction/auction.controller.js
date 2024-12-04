@@ -36,6 +36,300 @@ const getAll = catchError(async (req, res) => {
   return res.json(response);
 });
 
+const getAllCreated = catchError(async (req, res) => {
+  const { companyId, status, type } = req.body;
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 20;
+  const offset = (page - 1) * pageSize;
+  // const send = new Date();
+  // const year = send.getFullYear();
+  // const mes = String(send.getMonth() + 1).padStart(2, '0');
+  // const dia = String(send.getDate()).padStart(2, '0');
+  // const startOfDay = `${year}-${mes}-${dia} 00:00:00`;
+  // const endOfDay = `${year}-${mes}-${dia} 23:59:59`;
+  var results = [];
+  if (!status){
+    if(!type){
+      ///Sin status y sin type
+      console.log("Sin status y sin type")
+      results = await Auction.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: AuctionGuest },
+          { model: Company },
+          { model: Address },
+          { model: VariantProduct,
+            include: [
+              { model: Product,
+                include: [
+                  { model: Category }
+                ]
+              },
+              { model: Price },
+              { model: Stock },
+            ]
+           },
+        ],
+         where: {
+          companyId,
+          // startDate: { [Op.lte]: startOfDay } ,
+          // endDate: { [Op.gte]: endOfDay },
+         },
+         order: [['endDate', 'DESC']],
+      });
+    } else {
+      ///Sin status y con type
+      console.log("Sin status y con type")
+      results = await Auction.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: AuctionGuest },
+          { model: Company },
+          { model: Address },
+          { model: VariantProduct,
+            include: [
+              { model: Product,
+                include: [
+                  { model: Category }
+                ]
+              },
+              { model: Price },
+              { model: Stock },
+            ]
+           },
+        ],
+         where: {
+          companyId,
+          // startDate: { [Op.lte]: startOfDay } ,
+          // endDate: { [Op.gte]: endOfDay },
+          type,
+         },
+         order: [['endDate', 'DESC']],
+      });
+    }
+  } else {
+    if(!type){
+      ///Con status y Sin type
+      console.log("Con status y sin type")
+      results = await Auction.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: AuctionGuest },
+          { model: Company },
+          { model: Address },
+          { model: VariantProduct,
+            include: [
+              { model: Product,
+                include: [
+                  { model: Category }
+                ]
+              },
+              { model: Price },
+              { model: Stock },
+            ]
+           },
+        ],
+         where: {
+          companyId,
+          // startDate: { [Op.lte]: startOfDay } ,
+          // endDate: { [Op.gte]: endOfDay },
+          status,
+         },
+         order: [['endDate', 'DESC']],
+      });
+    } else {
+      ///Con status y con type
+      console.log("Con status y Con type")
+      results = await Auction.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: AuctionGuest },
+          { model: Company },
+          { model: Address },
+          { model: VariantProduct,
+            include: [
+              { model: Product,
+                include: [
+                  { model: Category }
+                ]
+              },
+              { model: Price },
+              { model: Stock },
+            ]
+           },
+        ],
+         where: {
+          companyId,
+          // startDate: { [Op.lte]: startOfDay } ,
+          // endDate: { [Op.gte]: endOfDay },
+          status,
+          type,
+         },
+         order: [['endDate', 'DESC']],
+      });
+    }
+  }
+  const response = {
+    totalRecords: results.count,
+    totalPages: Math.ceil(results.count / pageSize),
+    currentPage: page,
+    pageSize: pageSize,
+    data: results.rows,
+  };
+  return res.json(response);
+});
+
+const getAllCreatedSearch = catchError(async (req, res) => {
+  const { companyId, query, status, type } = req.body;
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 20;
+  const offset = (page - 1) * pageSize;
+  // const send = new Date();
+  // const year = send.getFullYear();
+  // const mes = String(send.getMonth() + 1).padStart(2, '0');
+  // const dia = String(send.getDate()).padStart(2, '0');
+  // const startOfDay = `${year}-${mes}-${dia} 00:00:00`;
+  // const endOfDay = `${year}-${mes}-${dia} 23:59:59`;
+  var results = [];
+  if ( !status ){
+    if ( !type ){
+      ///Sin status y sin type
+      results = await Auction.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: AuctionGuest },
+          { model: Company },
+          { model: Address },
+          { model: VariantProduct,
+            include: [
+              { model: Product,
+                include: [
+                  { model: Category }
+                ]
+              },
+              { model: Price },
+              { model: Stock },
+            ]
+           },
+        ],
+         where: {
+          companyId,
+          // startDate: { [Op.lte]: startOfDay },
+          // endDate: { [Op.gte]: endOfDay },
+          name: { [Op.iLike]: `%${query}%`},
+         },
+         order: [['endDate', 'DESC']],
+      });
+    } else {
+      ///Sin status y con type
+      results = await Auction.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: AuctionGuest },
+          { model: Company },
+          { model: Address },
+          { model: VariantProduct,
+            include: [
+              { model: Product,
+                include: [
+                  { model: Category }
+                ]
+              },
+              { model: Price },
+              { model: Stock },
+            ]
+           },
+        ],
+         where: {
+          companyId,
+          // startDate: { [Op.lte]: startOfDay },
+          // endDate: { [Op.gte]: endOfDay },
+          name: { [Op.iLike]: `%${query}%`},
+          type,
+         },
+         order: [['endDate', 'DESC']],
+      });
+    }
+  } else {
+    if ( !type ){
+      ///Con status y sin type
+      results = await Auction.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: AuctionGuest },
+          { model: Company },
+          { model: Address },
+          { model: VariantProduct,
+            include: [
+              { model: Product,
+                include: [
+                  { model: Category }
+                ]
+              },
+              { model: Price },
+              { model: Stock },
+            ]
+           },
+        ],
+         where: {
+          companyId,
+          // startDate: { [Op.lte]: startOfDay },
+          // endDate: { [Op.gte]: endOfDay },
+          name: { [Op.iLike]: `%${query}%`},
+          status,
+         },
+         order: [['endDate', 'DESC']],
+      });
+    } else {
+      ///Con status y con type
+      results = await Auction.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: AuctionGuest },
+          { model: Company },
+          { model: Address },
+          { model: VariantProduct,
+            include: [
+              { model: Product,
+                include: [
+                  { model: Category }
+                ]
+              },
+              { model: Price },
+              { model: Stock },
+            ]
+           },
+        ],
+         where: {
+          companyId,
+          // startDate: { [Op.lte]: startOfDay },
+          // endDate: { [Op.gte]: endOfDay },
+          name: { [Op.iLike]: `%${query}%`},
+          status,
+          type,
+         },
+         order: [['endDate', 'DESC']],
+      });
+    }
+  }
+  const response = {
+    totalRecords: results.count,
+    totalPages: Math.ceil(results.count / pageSize),
+    currentPage: page,
+    pageSize: pageSize,
+    data: results.rows,
+  };
+  return res.json(response);
+});
+
 const getAllWinner = catchError(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 20;
@@ -231,6 +525,40 @@ const getAllSearch = catchError(async(req, res) => {
   return res.json(result);
 });
 
+const updateAuctionAddress = catchError(async (req, res) => {
+  const { auctionId, auction, addressId, address } = req.body;
+  const transaction = await sequelize.transaction();
+
+  try{ 
+    const result = await Auction.update(
+      { ...auction }, 
+      {
+        where: { id: auctionId },
+        returning: true,
+      },
+      { transaction }
+    );
+  
+    const resultAdd = await Address.update(
+      { ...address }, 
+      {
+        where: { id: addressId },
+        returning: true,
+      }, 
+      { transaction }
+    );
+
+    await transaction.commit();
+    return res.json({auction: result[1][0], address: resultAdd[1][0]});
+  } catch (error) {
+    if (!transaction.finished) {
+      await transaction.rollback();
+      }
+      console.error("Error durante la transacción:", error);
+      return res.status(404).json({ message: "Error al actualizar los datos de la apuesta", error });
+  }
+});
+
 module.exports = {
   getAll,
   create,
@@ -241,4 +569,7 @@ module.exports = {
   getAuctionAddress,
   createAuctionVariantFile,
   getAllSearch,
+  getAllCreated,
+  getAllCreatedSearch,
+  updateAuctionAddress,
 };

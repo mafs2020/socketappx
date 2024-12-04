@@ -1,5 +1,9 @@
 const catchError = require("../../utils/catchError");
 const AuctionGuest = require("../../models/Auction/AuctionGuest");
+const Auction = require("../../models/Auction/Auction");
+const User = require("../../models/User/User");
+const VariantProduct = require("../../models/Product/VariantProduct");
+const { Op, literal, col } = require('sequelize');
 
 const getAll = catchError(async (req, res) => {
   //Recibe el id de la subasta
@@ -48,6 +52,261 @@ const addGuest = catchError(async (req, res) => {
   return res.json(result[1][0]);
 });
 
+const getAllParticipating = catchError(async (req, res) => {
+  const { companyId, status, type } = req.body;
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 20;
+  const offset = (page - 1) * pageSize;
+  // const send = new Date();
+  // const year = send.getFullYear();
+  // const mes = String(send.getMonth() + 1).padStart(2, '0');
+  // const dia = String(send.getDate()).padStart(2, '0');
+  // const startOfDay = `${year}-${mes}-${dia} 00:00:00`;
+  // const endOfDay = `${year}-${mes}-${dia} 23:59:59`;
+  var results = [];
+  if (!status) {
+    if (!type) {
+      ///Sin status y sin type
+      console.log("Sin status y sin type")
+      results = await AuctionGuest.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: Auction,
+            include: [
+              { model: VariantProduct },
+            ],
+            where: {
+              // startDate: { [Op.lte]: startOfDay } ,
+              // endDate: { [Op.gte]: endOfDay },
+             }
+           },
+          { model: User,
+            where: {
+              isAdmin: true,
+              companyId
+            }
+           },
+        ]
+      });
+    } else {
+      ///Sin status y con type
+      console.log("Sin status y con type")
+      results = await AuctionGuest.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: Auction,
+            include: [
+              { model: VariantProduct },
+            ],
+            where: {
+              // startDate: { [Op.lte]: startOfDay } ,
+              // endDate: { [Op.gte]: endOfDay },
+              type
+             }
+           },
+          { model: User,
+            where: {
+              isAdmin: true,
+              companyId,
+            }
+           },
+        ]
+      });
+    }
+  } else {
+    if (!type){
+      ///Con status y sin type
+      console.log("con status y sin type")
+      results = await AuctionGuest.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: Auction,
+            include: [
+              { model: VariantProduct },
+            ],
+            where: {
+              // startDate: { [Op.lte]: startOfDay } ,
+              // endDate: { [Op.gte]: endOfDay },
+              status,
+             }
+           },
+          { model: User,
+            where: {
+              isAdmin: true,
+              companyId,
+              
+            }
+           },
+        ]
+      });
+    } else {
+      ///Con status y con type
+      console.log("Con status y con type")
+      results = await AuctionGuest.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: Auction,
+            include: [
+              { model: VariantProduct },
+            ],
+            where: {
+              // startDate: { [Op.lte]: startOfDay } ,
+              // endDate: { [Op.gte]: endOfDay },
+              type,
+              status,
+             }
+           },
+          { model: User,
+            where: {
+              isAdmin: true,
+              companyId,
+            }
+           },
+        ]
+      });
+    }
+  }
+  const response = {
+    totalRecords: results.count,
+    totalPages: Math.ceil(results.count / pageSize),
+    currentPage: page,
+    pageSize: pageSize,
+    data: results.rows,
+  };
+  return res.json(response);
+});
+
+const getAllParticipatingSearch = catchError(async (req, res) => {
+  const { companyId, query, status, type } = req.body;
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 20;
+  const offset = (page - 1) * pageSize;
+  const send = new Date();
+  const year = send.getFullYear();
+  const mes = String(send.getMonth() + 1).padStart(2, '0');
+  const dia = String(send.getDate()).padStart(2, '0');
+  const startOfDay = `${year}-${mes}-${dia} 00:00:00`;
+  const endOfDay = `${year}-${mes}-${dia} 23:59:59`;
+  var results = [];
+  if ( !status ){
+    if ( !type ){
+      ///Sin status y sin type
+      results = await AuctionGuest.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: Auction,
+            include: [
+              { model: VariantProduct },
+            ],
+            where: {
+              startDate: { [Op.lte]: startOfDay } ,
+              endDate: { [Op.gte]: endOfDay },
+              name: { [Op.iLike]: `%${query}%`},
+             }
+           },
+          { model: User,
+            where: {
+              isAdmin: true,
+              companyId
+            }
+           },
+        ]
+      });
+    } else {
+      ///Sin status y con type
+      results = await AuctionGuest.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: Auction,
+            include: [
+              { model: VariantProduct },
+            ],
+            where: {
+              startDate: { [Op.lte]: startOfDay } ,
+              endDate: { [Op.gte]: endOfDay },
+              name: { [Op.iLike]: `%${query}%`},
+              type
+             }
+           },
+          { model: User,
+            where: {
+              isAdmin: true,
+              companyId
+            }
+           },
+        ]
+      });
+    }
+  } else {
+    if ( !type ){
+      ///Con status y sin type
+      results = await AuctionGuest.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: Auction,
+            include: [
+              { model: VariantProduct },
+            ],
+            where: {
+              startDate: { [Op.lte]: startOfDay } ,
+              endDate: { [Op.gte]: endOfDay },
+              name: { [Op.iLike]: `%${query}%`},
+              status
+             }
+           },
+          { model: User,
+            where: {
+              isAdmin: true,
+              companyId
+            }
+           },
+        ]
+      });
+    } else {
+      ///Con status y con type
+      results = await AuctionGuest.findAndCountAll({
+        limit: pageSize,
+        offset: offset,
+        include: [
+          { model: Auction,
+            include: [
+              { model: VariantProduct },
+            ],
+            where: {
+              startDate: { [Op.lte]: startOfDay } ,
+              endDate: { [Op.gte]: endOfDay },
+              name: { [Op.iLike]: `%${query}%`},
+              status, 
+              type,
+             }
+           },
+          { model: User,
+            where: {
+              isAdmin: true,
+              companyId
+            }
+           },
+        ]
+      });
+    }
+  }
+  const response = {
+    totalRecords: results.count,
+    totalPages: Math.ceil(results.count / pageSize),
+    currentPage: page,
+    pageSize: pageSize,
+    data: results.rows,
+  };
+  return res.json(response);
+});
+
 module.exports = {
   getAll,
   create,
@@ -55,4 +314,6 @@ module.exports = {
   remove,
   update,
   addGuest,
+  getAllParticipating,
+  getAllParticipatingSearch,
 };
