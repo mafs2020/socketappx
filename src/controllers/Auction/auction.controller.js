@@ -35,6 +35,29 @@ const getAll = catchError(async (req, res) => {
   };
   return res.json(response);
 });
+const getAllByStatusAndType = catchError(async (req, res) => {
+  const { status = "Activo", type = "Holandesa" } = req.body;
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 20;
+  const offset = (page - 1) * pageSize;
+  if (!status || !type) {
+    return res.status(404).json({ error: "faltan datos" });
+  }
+  const results = await Auction.findAndCountAll({
+    limit: pageSize,
+    offset: offset,
+    where: { openAuction: true, status, type },
+    include: [{ model: AuctionGuest }],
+  });
+  const response = {
+    totalRecords: results.count,
+    totalPages: Math.ceil(results.count / pageSize),
+    currentPage: page,
+    pageSize: pageSize,
+    data: results.rows,
+  };
+  return res.json(response);
+});
 
 const getAllCreated = catchError(async (req, res) => {
   const { companyId, status, type } = req.body;
@@ -545,4 +568,5 @@ module.exports = {
   getAllCreated,
   getAllCreatedSearch,
   updateAuctionAddress,
+  getAllByStatusAndType,
 };

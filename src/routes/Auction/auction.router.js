@@ -11,6 +11,7 @@ const {
   getAllCreated,
   getAllCreatedSearch,
   updateAuctionAddress,
+  getAllByStatusAndType,
 } = require("../../controllers/Auction/auction.controller");
 const express = require("express");
 const upload = require("../../utils/multer");
@@ -19,7 +20,7 @@ const auctionRouter = express.Router();
 
 auctionRouter.route("/auction").get(getAll).post(create);
 
-auctionRouter.route("/auction/:tipo/kkk").get(getAllkkk);
+auctionRouter.route("/auction/:tipo/kkk").get(getAllByStatusAndType);
 
 auctionRouter.route("/auction/allWinner").get(getAllWinner);
 
