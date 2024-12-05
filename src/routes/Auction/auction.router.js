@@ -20,7 +20,7 @@ const auctionRouter = express.Router();
 
 auctionRouter.route("/auction").get(getAll).post(create);
 
-auctionRouter.route("/auction/:tipo/kkk").get(getAllByStatusAndType);
+auctionRouter.route("/auction/tipo/status").post(getAllByStatusAndType);
 
 auctionRouter.route("/auction/allWinner").get(getAllWinner);
 
