@@ -70,7 +70,7 @@ const create = catchError(async (req, res) => {
         // Crear Company y asociarla con Address
         const comp = await Company.create({
             ...JSON.parse(companys),
-            addressId: addr.id,
+            // addressId: addr.id,
             urlImg: urls[1],
             isVerified: false
         }, { transaction });
