@@ -398,7 +398,31 @@ const updateUserData = catchError(async(req, res) => {
     if(result[0] === 0) {
         return res.status(401).json({ message: "Error al actualizar el usuario", error: result });
     }
-    return res.json({Address: result[1][0]});
+
+    const userss = await User.findOne({ where: { id } });
+    if (!userss) return res.status(401).json({ message: "No se puedo actualizar el usuario" });
+    else {
+        const company = await Company.findOne({ where: { id: userss.companyId } });
+        if (!company) return res.status(401).json({ message: "No se puedo actualizar el usuario" });
+        const token = jwt.sign({ userss }, process.env.TOKEN_SECRET, {
+        expiresIn: "1d",
+        });
+        const us = {
+            id: userss.id,
+            email: userss.email,
+            firstName: userss.firstName,
+            lastName: userss.lastName,
+            phone: userss.phone,
+            userName: userss.userName,
+            position: userss.position,
+            urlImg: userss.urlImg,
+            companyId: userss.companyId,
+            isAdmin: userss.isAdmin,
+            companyName: company.name
+        }
+        return res.json({ user: us, token });
+    }
+    // return res.json({Address: result[1][0]});
 });
 
 const updateUserDataFile = catchError(async(req, res) => {
@@ -417,7 +441,31 @@ const updateUserDataFile = catchError(async(req, res) => {
         const users = await User.update(
             {...JSON.parse(user), urlImg: urls[0]},
             {where: { id: JSON.parse(id)}});
-        return res.status(200).json({ user: users });
+
+        const userss = await User.findOne({ where: { id: JSON.parse(id) } });
+        if (!userss) return res.status(401).json({ message: "No se puedo actualizar el usuario" });
+        else {
+            const company = await Company.findOne({ where: { id: userss.companyId } });
+            if (!company) return res.status(401).json({ message: "No se puedo actualizar el usuario" });
+            const token = jwt.sign({ userss }, process.env.TOKEN_SECRET, {
+            expiresIn: "1d",
+            });
+            const us = {
+                id: userss.id,
+                email: userss.email,
+                firstName: userss.firstName,
+                lastName: userss.lastName,
+                phone: userss.phone,
+                userName: userss.userName,
+                position: userss.position,
+                urlImg: userss.urlImg,
+                companyId: userss.companyId,
+                isAdmin: userss.isAdmin,
+                companyName: company.name
+            }
+            return res.json({ user: us, token });
+        }
+        // return res.status(200).json({ user: users });
     } catch (error) {
         // console.error('Error al crear los registros:', error);
         return res.status(400).json({ message: "Error al guardar los datos", error });
