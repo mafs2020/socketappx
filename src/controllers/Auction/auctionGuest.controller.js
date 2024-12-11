@@ -4,6 +4,11 @@ const Auction = require("../../models/Auction/Auction");
 const User = require("../../models/User/User");
 const VariantProduct = require("../../models/Product/VariantProduct");
 const { Op, literal, col } = require('sequelize');
+const Address = require("../../models/Address/Address");
+const Company = require("../../models/User/Company");
+const Product = require("../../models/Product/Product");
+const Price = require("../../models/Product/Price");
+const Stock = require("../../models/Product/Stock");
 
 const getAll = catchError(async (req, res) => {
   //Recibe el id de la subasta
@@ -74,7 +79,15 @@ const getAllParticipating = catchError(async (req, res) => {
         include: [
           { model: Auction,
             include: [
-              { model: VariantProduct },
+              { model: Address },
+              { model: Company },
+              { model: VariantProduct,
+                include: [
+                  { model: Product },
+                  { model: Price },
+                  { model: Stock },
+                ]
+              },
             ],
             where: {
               // startDate: { [Op.lte]: startOfDay } ,
@@ -98,7 +111,15 @@ const getAllParticipating = catchError(async (req, res) => {
         include: [
           { model: Auction,
             include: [
-              { model: VariantProduct },
+              { model: Address },
+              { model: Company },
+              { model: VariantProduct,
+                include: [
+                  { model: Product },
+                  { model: Price },
+                  { model: Stock },
+                ]
+              },
             ],
             where: {
               // startDate: { [Op.lte]: startOfDay } ,
@@ -125,7 +146,15 @@ const getAllParticipating = catchError(async (req, res) => {
         include: [
           { model: Auction,
             include: [
-              { model: VariantProduct },
+              { model: Address },
+              { model: Company },
+              { model: VariantProduct,
+                include: [
+                  { model: Product },
+                  { model: Price },
+                  { model: Stock },
+                ]
+              },
             ],
             where: {
               // startDate: { [Op.lte]: startOfDay } ,
@@ -151,7 +180,15 @@ const getAllParticipating = catchError(async (req, res) => {
         include: [
           { model: Auction,
             include: [
-              { model: VariantProduct },
+              { model: Address },
+              { model: Company },
+              { model: VariantProduct,
+                include: [
+                  { model: Product },
+                  { model: Price },
+                  { model: Stock },
+                ]
+              },
             ],
             where: {
               // startDate: { [Op.lte]: startOfDay } ,
@@ -201,7 +238,15 @@ const getAllParticipatingSearch = catchError(async (req, res) => {
         include: [
           { model: Auction,
             include: [
-              { model: VariantProduct },
+              { model: Address },
+              { model: Company },
+              { model: VariantProduct,
+                include: [
+                  { model: Product },
+                  { model: Price },
+                  { model: Stock },
+                ]
+              },
             ],
             where: {
               startDate: { [Op.lte]: startOfDay } ,
@@ -225,7 +270,15 @@ const getAllParticipatingSearch = catchError(async (req, res) => {
         include: [
           { model: Auction,
             include: [
-              { model: VariantProduct },
+              { model: Address },
+              { model: Company },
+              { model: VariantProduct,
+                include: [
+                  { model: Product },
+                  { model: Price },
+                  { model: Stock },
+                ]
+              },
             ],
             where: {
               startDate: { [Op.lte]: startOfDay } ,
@@ -252,7 +305,15 @@ const getAllParticipatingSearch = catchError(async (req, res) => {
         include: [
           { model: Auction,
             include: [
-              { model: VariantProduct },
+              { model: Address },
+              { model: Company },
+              { model: VariantProduct,
+                include: [
+                  { model: Product },
+                  { model: Price },
+                  { model: Stock },
+                ]
+              },
             ],
             where: {
               startDate: { [Op.lte]: startOfDay } ,
@@ -277,7 +338,15 @@ const getAllParticipatingSearch = catchError(async (req, res) => {
         include: [
           { model: Auction,
             include: [
-              { model: VariantProduct },
+              { model: Address },
+              { model: Company },
+              { model: VariantProduct,
+                include: [
+                  { model: Product },
+                  { model: Price },
+                  { model: Stock },
+                ]
+              },
             ],
             where: {
               startDate: { [Op.lte]: startOfDay } ,
