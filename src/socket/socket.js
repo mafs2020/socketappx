@@ -37,6 +37,7 @@ module.exports = (io) => {
     // io.in("room-101").disconnectSockets();
 
     socket.on("joinRoom", (id) => {
+      console.log("se conectaaaa");
       console.log("id :>> ", id);
       socket.join(`puja-${id}`);
       console.log(socket.rooms);
@@ -107,6 +108,11 @@ module.exports = (io) => {
     // }
 
     socket.on("subasta", ({ id: room, monto }) => {
+      console.log("ghghghghghghgghghghgh");
+      console.log("ghghghghghghgghghgh");
+      console.log("ghghghghghghgghghghh");
+      console.log("ghghghghghghghghgh");
+      console.log("ghghghghghghgghghghgh");
       console.log("llego hasta acaaaa");
       console.log("=====================================================");
       console.log("====================================================");

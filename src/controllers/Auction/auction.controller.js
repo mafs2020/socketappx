@@ -37,12 +37,10 @@ const getAll = catchError(async (req, res) => {
 });
 const getAllByStatusAndType = catchError(async (req, res) => {
   const { status, type } = req.body;
+  console.log(status ?? "no hay estatus", type ?? "no hay tipo");
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 20;
   const offset = (page - 1) * pageSize;
-  if (!status || !type) {
-    return res.status(404).json({ error: "faltan datos" });
-  }
   if (!status && !type) {
     const results = await Auction.findAndCountAll({
       limit: pageSize,
@@ -81,6 +79,35 @@ const getAllByStatusAndType = catchError(async (req, res) => {
         openAuction: true,
         // status,
         type,
+      },
+      include: [
+        { model: AuctionGuest },
+        { model: Address },
+        { model: Company },
+        {
+          model: VariantProduct,
+          include: [{ model: Product }, { model: Price }, { model: Stock }],
+        },
+      ],
+      order: [["endDate", "DESC"]],
+    });
+    const response = {
+      totalRecords: results.count,
+      totalPages: Math.ceil(results.count / pageSize),
+      currentPage: page,
+      pageSize: pageSize,
+      data: results.rows,
+    };
+    return res.json(response);
+  }
+  if (status && !type) {
+    const results = await Auction.findAndCountAll({
+      limit: pageSize,
+      offset: offset,
+      where: {
+        openAuction: true,
+        status,
+        // type,
       },
       include: [
         { model: AuctionGuest },
